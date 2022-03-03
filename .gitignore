@@ -1,2 +1,3 @@
-# ignore all compiled files
+# ignore all compiled files .o, as well as the compiled program
 *.o
+program
