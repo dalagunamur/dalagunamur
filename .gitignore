@@ -1,3 +1,4 @@
 # ignore all compiled files .o, as well as the compiled program
 *.o
+.DS_Store
 program
