@@ -10,7 +10,7 @@ bool loadMapFile(int x, int y)		//fonction qui ouvre le fichier txt et charge la
 {
 	fullMap = malloc(sizeof(char *) * x);
     FILE *f = NULL;
-    f = fopen("map2.txt", "r");
+    f = fopen("map.txt", "r");
     if(f == NULL)
     {
         return false;
@@ -40,11 +40,11 @@ listMap createFirstRow(void){
 	listMap row;
 	row = (listMap) malloc (sizeof(struct mapRow));
 
-	for(int i=0;i<MAP_SIZE_Y;i++){
-		(*row).rowContent[i]=fullMap[MAP_SIZE_X-1][i]; //gets the value of the last line of the map file, which is the starting position of the player
+	for(int i = 0; i < MAP_SIZE_Y; i++){
+		(*row).rowContent[i] = fullMap[MAP_SIZE_X-1][i]; //gets the value of the last line of the map file, which is the starting position of the player
 	}
 
-	(*row).nextRow=NULL;
+	(*row).nextRow = NULL;
 	
 	return row;
 }
@@ -54,13 +54,13 @@ listMap createRow(void){
 	listMap row;
 	row = (listMap) malloc (sizeof(struct mapRow));
 
-	int readLine=(rand()%(MAP_SIZE_X - 2)) +1; // get a random number between 1 and MAP_SIZE_X-1, as the last row of the map should only be used when intializing the game
+	int readLine = (rand()%(MAP_SIZE_X - 2)) +1; // get a random number between 1 and MAP_SIZE_X-1, as the last row of the map should only be used when intializing the game
 
-	for(int i=0;i<MAP_SIZE_Y;i++){
-		(*row).rowContent[i]=fullMap[readLine][i];
+	for(int i = 0; i < MAP_SIZE_Y; i++){
+		(*row).rowContent[i] = fullMap[readLine][i];
 	}
 
-	(*row).nextRow=NULL;
+	(*row).nextRow = NULL;
 	
 	return row;
 }
@@ -72,7 +72,7 @@ void addRow(listMap * map, listMap * newRow){ // adds newRow as new head of map
 
 void deleteRow(listMap map){
 	listMap temp = map;
-	while(temp->nextRow->nextRow!=NULL){
+	while(temp->nextRow->nextRow != NULL){
 		temp = temp->nextRow;
 	}
 	listMap rowToBeDeleted = temp->nextRow;
@@ -83,7 +83,7 @@ void deleteRow(listMap map){
 
 void displayMap(listMap map){ // prints the whole map on screen
  	while (map != NULL){
-		for(int i=0;i<MAP_SIZE_Y;i++){
+		for(int i = 0; i < MAP_SIZE_Y; i++){
 			printf("%c",(*map).rowContent[i]);
 		}
 		printf("%p \n",(*map).nextRow);

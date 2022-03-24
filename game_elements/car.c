@@ -10,9 +10,9 @@ pCar createCar(void){
 	car = (pCar) malloc (sizeof(struct car));	
 	sprintf((*car).name,"Bot %d",ennemyCounter);
 
-	(*car).healthPoints=(rand()%5)+1;
+	(*car).healthPoints = (rand()%5)+1;
 	
-	(*car).next=NULL;
+	(*car).next = NULL;
 	
 	return car;
 }
@@ -43,7 +43,7 @@ void removeCar(pCar * list, pCar * elementToRemove){
 		while (temp->next != *elementToRemove){ // as long as the next element is not the one to delete, jump to the next element
 			temp = temp->next;
 		}
-		temp->next=temp->next->next; // the next element of the current (ie, the one before the element to delete), now points to the next of the one to delete
+		temp->next = temp->next->next; // the next element of the current (ie, the one before the element to delete), now points to the next of the one to delete
 	}
 	
 	ennemyCounter--;
@@ -55,7 +55,7 @@ void damageAllCars(pCar * list){
 		tempItem = *list;
 		while (tempItem != NULL){
 			(*tempItem).healthPoints--;
-			if((*tempItem).healthPoints==0){
+			if((*tempItem).healthPoints == 0){
 				printf("\n%s has now %i HP and is dead.\n",(*tempItem).name,(*tempItem).healthPoints);
 				pCar tt = tempItem;
 				removeCar(list,&tt);
