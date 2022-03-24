@@ -1,6 +1,10 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
 #define COOLDOWN 100 // cooldown period during which the alternate weapon will not be available anymore
 
 struct player{

@@ -18,11 +18,11 @@ struct game{
     pBonus first_bonus;
 };
 
-struct game create_game(); // initialize a new game or load an existing game
+struct game create_game(void); // initialize a new game or load an existing game
 
-void play(); // this function drives the various sequences of the game
-void diplay_pause(); // when the players pauses the game, allows to save or exit or resume
+void play(void); // this function drives the various sequences of the game
+void diplay_pause(void); // when the players pauses the game, allows to save or exit or resume
 void set_scrolling_pace(int timer);
-void save_game();
+void save_game(void);
 
 #endif

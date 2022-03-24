@@ -10,7 +10,8 @@ endif
 
 FLAG=-Wall -std=c99
 SRCS= main.c game.c menu.c map/map.c game_elements/bonus.c game_elements/missile.c game_elements/obstacle.c game_elements/player.c game_elements/car.c
-OBJET = $(SRCS:.c=.o)
+## OBJET = $(SRCS:.c=.o)
+OBJET = main.o game.o menu.o map.o bonus.o missile.o obstacle.o player.o car.o
 EXEC= program
 
 
