@@ -10,9 +10,10 @@ bool loadMapFile(int x, int y)		//fonction qui ouvre le fichier txt et charge la
 {
 	fullMap = malloc(sizeof(char *) * x);
     FILE *f = NULL;
-    f = fopen("map.txt", "r");
+    f = fopen("map/map.txt", "r");
     if(f == NULL)
     {
+        printf("File not found.\n");
         return false;
     }
     char c;
@@ -65,9 +66,9 @@ listMap createRow(void){
 	return row;
 }
 
-void addRow(listMap * map, listMap * newRow){ // adds newRow as new head of map
- 	(**newRow).nextRow = *map;
- 	*map = *newRow;
+listMap addRow(listMap map, listMap newRow){ // adds newRow as new head of map
+ 	(*newRow).nextRow = map;
+ 	return newRow;
 }
 
 void deleteRow(listMap map){

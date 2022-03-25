@@ -22,7 +22,7 @@ char **fullMap; // variable that will be used to store in a matrix the content o
 bool loadMapFile(int x, int y); // function used to read the map.txt file and store it in fullMap, which will be read each time the scrolling happens
 listMap createFirstRow(void); // function used to create the first row when the game starts
 listMap createRow(void); // generic function to create a new row by reading out of fullMap
-void addRow(listMap * map, listMap * newRow); // inserts a row as new head of the chained list
+listMap addRow(listMap map, listMap newRow); // inserts a row as new head of the chained list
 void deleteRow(listMap map); // removes the last row of the chained list
 void displayMap(listMap map); // displays the map on screen
 

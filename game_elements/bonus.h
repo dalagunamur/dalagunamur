@@ -10,7 +10,7 @@ struct bonus{
 
 typedef struct bonus * pBonus;
 
-pBonus create_bonus(); // to create a new instance of a bonus
+pBonus create_bonus(void); // to create a new instance of a bonus
 void destroy_bonus(pBonus bonus);
 
 #endif

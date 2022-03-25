@@ -11,7 +11,7 @@ struct missile{
 
 typedef struct missile * pMissile;
 
-pMissile create_missile(); // to create a new instance of a missile void move_missile(missile_t *missile);
+pMissile create_missile(void); // to create a new instance of a missile void move_missile(missile_t *missile);
 void destroy_missile(pMissile missile);
 
 #endif

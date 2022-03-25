@@ -13,16 +13,20 @@ int main(){
 	// START INITIALIZE THE MAP
 	listMap row=NULL;
 	listMap map=NULL;
+    printf("Row and map initialized./n");
 
 	loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);
-	
+    printf("File loaded in buffer./n");
+    
 	row=createFirstRow();
-	addRow(&map, &row);
+	map = addRow(map, row);
+    printf("First row created./n");
 	
 	for(int i=0;i<WINDOW_SIZE_X-1;i++){
 		row=createRow();
-		addRow(&map, &row);
+		map = addRow(map, row);
 	}
+    printf("All 40 first rows created./n");
 	// END INITIALIZE MAP
 	
 	int exitAction=0;
@@ -31,7 +35,7 @@ int main(){
 		displayMap(map);
 		deleteRow(map);
 		row=createRow();
-		addRow(&map,&row);
+		map = addRow(map,row);
 		usleep(80000);
 		exitAction++;
 	}
