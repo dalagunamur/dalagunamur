@@ -1,3 +1,10 @@
+#ifdef __APPLE_CC__
+#define GL_SILENCE_DEPRECATION TRUE // to silence warnings about GLUT not supported by recent versions of MacOS
+#include <OpenGL/OpenGL.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -37,25 +44,11 @@ bool loadMapFile(int x, int y)		//fonction qui ouvre le fichier txt et charge la
 }
 
 
-listMap createFirstRow(void){
-	listMap row;
-	row = (listMap) malloc (sizeof(struct mapRow));
-
-	for(int i = 0; i < MAP_SIZE_Y; i++){
-		(*row).rowContent[i] = fullMap[MAP_SIZE_X-1][i]; //gets the value of the last line of the map file, which is the starting position of the player
-	}
-
-	(*row).nextRow = NULL;
-	
-	return row;
-}
-
-
 listMap createRow(void){
 	listMap row;
 	row = (listMap) malloc (sizeof(struct mapRow));
 
-	int readLine = (rand()%(MAP_SIZE_X - 2)) +1; // get a random number between 1 and MAP_SIZE_X-1, as the last row of the map should only be used when intializing the game
+	int readLine = (rand()%(MAP_SIZE_X -1)) +1; // get a random number between 1 and MAP_SIZE_X
 
 	for(int i = 0; i < MAP_SIZE_Y; i++){
 		(*row).rowContent[i] = fullMap[readLine][i];
@@ -66,7 +59,7 @@ listMap createRow(void){
 	return row;
 }
 
-listMap addRow(listMap map, listMap newRow){ // adds newRow as new head of map
+listMap addRow(listMap map, listMap newRow){ // adds newRow as new head of map and returns the new head
  	(*newRow).nextRow = map;
  	return newRow;
 }
@@ -83,11 +76,29 @@ void deleteRow(listMap map){
 }
 
 void displayMap(listMap map){ // prints the whole map on screen
- 	while (map != NULL){
-		for(int i = 0; i < MAP_SIZE_Y; i++){
-			printf("%c",(*map).rowContent[i]);
+    mapToRender = malloc(sizeof(char *) * WINDOW_SIZE_X);
+    int i = 0;
+    int j = 0;
+    while (map != NULL){
+        *(mapToRender + j) = malloc(sizeof(char *) * WINDOW_SIZE_Y);
+        for(int i = 0; i < MAP_SIZE_X; i++){
+            mapToRender[j][i] = (*map).rowContent[i];
 		}
-		printf("%p \n",(*map).nextRow);
+        j++;
  		map = (*map).nextRow;
  	}
+}
+
+void updateMap(int timer){
+    free(mapToRender);
+    deleteRow(map);
+    listMap row;
+    row = createRow();
+    map = addRow(map,row);
+//    printf("Row deleted and new one added\n");
+    displayMap(map);
+//    printf("mapToRender populated\n");
+    glutPostRedisplay();
+    glutTimerFunc(1000, updateMap, 0);
+//    printf("updateMap processing finished\n");
 }

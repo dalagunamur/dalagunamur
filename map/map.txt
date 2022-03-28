@@ -1,20 +1,60 @@
-#        0          #         1        #
-#        0          #         2        #
-#        0          #         3        #
-#        0          #         4        #
-#        0          #         5        #
-#        0          #         6        #
-#        0          #         7        #
-#        0          #         8        #
-#        0          #         9        #
-#        1          #         0        #
-#        1          #         1        #
-#        1          #         2        #
-#        1          #         3        #
-#        1          #         4        #
-#        1          #         5        #
-#        1          #         6        #
-#        1          #         7        #
-#        1          #         8        #
-#        1          #         9        #
-#        X          #         X        #
+BGGHGG#            @            #GGGGGB
+BGGGGG#            @            #GGHGGB
+BGGGGG#            @            #GGGGGB
+BGGTGG#            @            #GGGGGB
+BGGGGG#            @            #GGTGGB
+BGGGGG#            @            #GGTGGB
+BGGTGG#            @            #GGHGGB
+BGGHGG#            @            #GGTGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGHGG#            @            #GGGGGB
+BGGGGG#            @            #GGHGGB
+BGGHGG#            @            #GGTGGB
+BGGGGG#            @            #GGHGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB
+BGGGGG#            @            #GGGGGB

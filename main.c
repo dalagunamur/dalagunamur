@@ -1,44 +1,75 @@
+#ifdef __APPLE_CC__
+#define GL_SILENCE_DEPRECATION TRUE // to silence warnings about GLUT not supported by recent versions of MacOS
+#include <OpenGL/OpenGL.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
 #include "map/map.h"
+#include "game.h"
+#include "drawScreen.h"
 
+void initRendering(){
+    glEnable(GL_DEPTH_TEST);
+}
 
-int main(){
+void handleResize(int width,int heigth){
+    glViewport(0, 0, width, heigth);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, width, heigth, 0);
+}
+
+void display(){
+    glClearColor(0.0f,0.0f,0.0f,0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    play(mapToRender);
+    glFlush();
+}
+
+int main(int argc, char *argv[]){
 
 	srand(time(NULL));
 	
 	// START INITIALIZE THE MAP
-	listMap row=NULL;
-	listMap map=NULL;
-    printf("Row and map initialized./n");
-
-	loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);
-    printf("File loaded in buffer./n");
+	row=NULL;
+	map=NULL;
+//    printf("map and row initiated\n");
     
-	row=createFirstRow();
-	map = addRow(map, row);
-    printf("First row created./n");
-	
-	for(int i=0;i<WINDOW_SIZE_X-1;i++){
-		row=createRow();
-		map = addRow(map, row);
-	}
-    printf("All 40 first rows created./n");
-	// END INITIALIZE MAP
-	
-	int exitAction=0;
-	
-	while(exitAction<100){
-		displayMap(map);
-		deleteRow(map);
-		row=createRow();
-		map = addRow(map,row);
-		usleep(80000);
-		exitAction++;
-	}
+    loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);
+//    printf("buffer full map created.\n");
+    
+    for(int i=0;i<WINDOW_SIZE_X;i++){
+        row=createRow();
+        map = addRow(map, row);
+    }
+//    printf("Chained list created\n");
+    updateMap(map);
+
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
+
+    glutInitWindowSize((WINDOW_SIZE_Y-2)*Square_size, WINDOW_SIZE_X*Square_size);
+
+    glutCreateWindow("VvV");
+    initRendering();
+
+    glutDisplayFunc(display);
+//    printf("screen created\n");
+    glutReshapeFunc(handleResize);
+    glutTimerFunc(1000, updateMap, 0);
+//    printf("Looping to update the map\n");
+
+    glEnable(GL_DEPTH_TEST);
+    
+
+    glutMainLoop();
 	
 	return 0;
 	

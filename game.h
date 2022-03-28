@@ -20,7 +20,8 @@ struct game{
 
 struct game create_game(void); // initialize a new game or load an existing game
 
-void play(void); // this function drives the various sequences of the game
+void handleKeyboard(unsigned char input, int x, int y);
+void play(char **map); // this function drives the various sequences of the game
 void diplay_pause(void); // when the players pauses the game, allows to save or exit or resume
 void set_scrolling_pace(int timer);
 void save_game(void);

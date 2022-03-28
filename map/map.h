@@ -4,10 +4,10 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define MAP_SIZE_X 20
-#define MAP_SIZE_Y 40
+#define MAP_SIZE_X 60
+#define MAP_SIZE_Y 39
 #define WINDOW_SIZE_X 40
-#define WINDOW_SIZE_Y 40
+#define WINDOW_SIZE_Y 39
 
 
 struct mapRow{
@@ -17,14 +17,17 @@ struct mapRow{
 
 typedef struct mapRow * listMap;
 
-char **fullMap; // variable that will be used to store in a matrix the content of each row
+char **fullMap; // variable that will be used to store in a matrix the content of each row of the map file
+listMap map; // variable pointing to the head of the list of all current rows of the map
+listMap row; // variable used to create a new row in the map
+char **mapToRender; // variable that will be used to display the map on screen
 
 bool loadMapFile(int x, int y); // function used to read the map.txt file and store it in fullMap, which will be read each time the scrolling happens
-listMap createFirstRow(void); // function used to create the first row when the game starts
 listMap createRow(void); // generic function to create a new row by reading out of fullMap
 listMap addRow(listMap map, listMap newRow); // inserts a row as new head of the chained list
 void deleteRow(listMap map); // removes the last row of the chained list
 void displayMap(listMap map); // displays the map on screen
+void updateMap(int timer);
 
 
 #endif
@@ -40,7 +43,8 @@ typedef struct map{
      char *map[MAP_SIZE_COLS];
      map_t *next_element;
 } map_t;
-void load_file_map(int starting_row); map_t create_map_element();
+void load_file_map(int starting_row);
+ map_t create_map_element();
 void scroll_map(map_buffer_t *map);
 #endif
 */
