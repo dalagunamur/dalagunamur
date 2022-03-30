@@ -5,6 +5,7 @@
 #include "game_elements/bonus.h"
 #include "game_elements/car.h"
 #include "game_elements/missile.h"
+#include "game_elements/player.h"
 
 #define DIFFICULTY 123 // this value will be used as a multiplying factor to control the pace at which the difficulty level will change
 
@@ -21,7 +22,7 @@ struct game{
 struct game create_game(void); // initialize a new game or load an existing game
 
 void handleKeyboard(unsigned char input, int x, int y);
-void play(char **map); // this function drives the various sequences of the game
+void play(char **map, pPlayer p); // this function drives the various sequences of the game
 void diplay_pause(void); // when the players pauses the game, allows to save or exit or resume
 void set_scrolling_pace(int timer);
 void save_game(void);

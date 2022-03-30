@@ -16,48 +16,56 @@
 #include "game.h"
 #include "drawScreen.h"
 #include "map/map.h"
+#include "game_elements/player.h"
+
+bool MOVE_UP = false;
+bool MOVE_DOWN = false;
+bool MOVE_LEFT = false;
+bool MOVE_RIGHT = false;
 
 
 void handleKeyboard(unsigned char input, int x, int y){
     switch(input)
         {
+            case 'z':
+                MOVE_UP = true;
+                break;
+            case 's':
+                MOVE_DOWN = true;
+                break;
+            case 'q':
+                MOVE_LEFT = true;
+                break;
+            case 'd':
+                MOVE_RIGHT = true;
+                break;
             case 27:
                 exit(0);
         }
 }
 
-void play(char **map){
+void play(char **map, pPlayer p){
     drawMap();  //display the map on screen
-    
+    drawPlayer(p);
     
     glutKeyboardFunc(handleKeyboard);        //fonction de glut gérant le clavier
     
-//    if (LEFT == true)
-//    {
-//
-//        moveLeft(p);        //va se déplacer vers la gauche si on appuie sur q
-//        LEFT = false;
-//
-//    }
-//    if (RIGHT == true)
-//    {
-//
-//        moveRight(p);        //va se déplacer vers la droite si on apppuie sur d
-//        RIGHT = false;
-//    }
-//    if (UP == true)
-//    {
-//        moveUp(p);
-//        UP = false;
-//    }
-//
-//    if (DOWN == true)
-//    {
-//
-//                moveDown(p);
-//        DOWN = false;
-//    }
-
+    if (MOVE_UP){
+        move_player_up(map);
+        MOVE_UP = false;
+    }
+    if (MOVE_DOWN){
+        move_player_down(map);
+        MOVE_DOWN = false;
+    }
+    if (MOVE_LEFT){
+        move_player_left(map);
+        MOVE_LEFT = false;
+    }
+    if (MOVE_RIGHT){
+        move_player_right(map);
+        MOVE_RIGHT = false;
+    }
 
     glutPostRedisplay();
 }

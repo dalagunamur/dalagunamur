@@ -31,20 +31,3 @@ void updateMap(int timer);
 
 
 #endif
-
-/*
-#ifndef _MAP_H_
-#define _MAP_H_
-#define MAP_SIZE_ROWS 123 // defines the nbr of rows of the map #define MAP_SIZE_COLS 123 // defines the nbr of columns of the map
-typedef struct map_buffer{
-char *map[MAP_SIZE_ROWS][MAP_SIZE_COLS];
-} map_buffer_t;
-typedef struct map{
-     char *map[MAP_SIZE_COLS];
-     map_t *next_element;
-} map_t;
-void load_file_map(int starting_row);
- map_t create_map_element();
-void scroll_map(map_buffer_t *map);
-#endif
-*/

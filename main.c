@@ -28,7 +28,7 @@ void handleResize(int width,int heigth){
 void display(){
     glClearColor(0.0f,0.0f,0.0f,0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    play(mapToRender);
+    play(mapToRender,p);
     glFlush();
 }
 
@@ -39,6 +39,8 @@ int main(int argc, char *argv[]){
 	// START INITIALIZE THE MAP
 	row=NULL;
 	map=NULL;
+    p=createPlayer();
+    
 //    printf("map and row initiated\n");
     
     loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);

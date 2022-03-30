@@ -16,8 +16,14 @@ struct player{
 
 typedef struct player * pPlayer;
 
+pPlayer p;
 
-void move_player();
+pPlayer createPlayer();
+void move_player_up(char **map);
+void move_player_down(char **map);
+void move_player_left(char **map);
+void move_player_right(char **map);
+
 void player_fires(); // fire the main weapon
 void player_fires_alt(); // fire the alternate weapon
 void player_collision(); // obstacle or car hits player
