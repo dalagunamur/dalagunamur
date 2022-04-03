@@ -136,7 +136,7 @@ void glutCreateCars(int timer){
 void glutMoveCars(int timer){
     moveCars(listOfCars);
     glutPostRedisplay();
-    glutTimerFunc(200, glutMoveCars, 2);
+    glutTimerFunc(300, glutMoveCars, 2);
 }
 
 // this function is used to trigger the removal of inactive cars periodically

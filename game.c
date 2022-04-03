@@ -22,7 +22,7 @@ bool MOVE_UP = false;
 bool MOVE_DOWN = false;
 bool MOVE_LEFT = false;
 bool MOVE_RIGHT = false;
-
+bool FIRE_MISSILE = false;
 
 void handleKeyboard(unsigned char input, int x, int y){
     switch(input)
@@ -39,15 +39,19 @@ void handleKeyboard(unsigned char input, int x, int y){
             case 'd':
                 MOVE_RIGHT = true;
                 break;
-            case 27:
+            case 32: // when hitting the space bar
+                FIRE_MISSILE = true;
+                break;
+            case 27: // when hitting the ESCAPE key
                 exit(0);
         }
 }
 
-void play(char **map, pPlayer p, pCarList list){
+void play(char **map, pPlayer p, pCarList carList, pMissileList missileList){
     drawMap();  //display the map on screen
     drawPlayer(p); //display the player
-    drawCars(list); //display all the ennemies
+    drawCars(carList); //display all the ennemies
+    drawMissiles(missileList); //display all the missiles
     
     glutKeyboardFunc(handleKeyboard);        //fonction de glut gérant le clavier
     
@@ -66,6 +70,11 @@ void play(char **map, pPlayer p, pCarList list){
     if (MOVE_RIGHT){
         move_player_right(map);
         MOVE_RIGHT = false;
+    }
+    if (FIRE_MISSILE){
+        pMissile newMissile = createMissileFromPlayer();
+        addMissile(listOfMissiles, newMissile);
+        FIRE_MISSILE = false;
     }
 
     glutPostRedisplay();

@@ -20,6 +20,8 @@
  1 = creation of new cars
  2 = movement of the cars
  3 = destruction of inactive cars
+ 4 = movement of the missiles
+ 5 = destruction of inactive missiles
  */
 
 
@@ -37,7 +39,7 @@ void handleResize(int width,int heigth){
 void display(){
     glClearColor(0.0f,0.0f,0.0f,0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    play(mapToRender,p,listOfCars);
+    play(mapToRender, p, listOfCars, listOfMissiles);
     glFlush();
 }
 
@@ -49,7 +51,8 @@ int main(int argc, char *argv[]){
 	row = NULL;
 	map = NULL;
     p = createPlayer();
-    listOfCars=createCarList();
+    listOfCars = createCarList();
+    listOfMissiles = createMissileList();
     
 //    printf("Init completed\n");
     
@@ -62,7 +65,6 @@ int main(int argc, char *argv[]){
     }
 //    printf("Chained list for map created\n");
     updateMap(map);
-
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
@@ -77,8 +79,10 @@ int main(int argc, char *argv[]){
     glutReshapeFunc(handleResize);
     glutTimerFunc(1000, updateMap, 0);
     glutTimerFunc(2000, glutCreateCars, 1);
-    glutTimerFunc(200, glutMoveCars, 2);
+    glutTimerFunc(300, glutMoveCars, 2);
     glutTimerFunc(100, glutDestroyCars, 3);
+    glutTimerFunc(50, glutMoveMissiles, 4);
+    glutTimerFunc(50, glutDestroyMissiles, 5);
 //    printf("Looping to update the map\n");
 
     glEnable(GL_DEPTH_TEST);

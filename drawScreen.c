@@ -12,6 +12,7 @@
 #include "map/map.h"
 #include "game_elements/player.h"
 #include "game_elements/car.h"
+#include "game_elements/missile.h"
 #include "drawScreen.h"
 #include "game.h"
 
@@ -177,7 +178,7 @@ void drawCars(pCarList list){
             x = loop->pos_x;
             y = loop->pos_y;
             
-            glColor3f(1.0f,0.0f,0.0f);
+            glColor3f(0.53f,0.12f,0.47f);
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             glTranslatef(y*Square_size,x*Square_size,0.0f);
@@ -189,6 +190,34 @@ void drawCars(pCarList list){
             glEnd();
             
             loop = loop->nextCar;
+        }
+        free(loop);
+    }
+}
+
+void drawMissiles(pMissileList list){
+    if (list->firstMissile != NULL ){ // if the list of all missiles is not empty, draw the misiles. If list of missiles is empty, do nothing
+        pMissile loop;
+        loop = (pMissile) malloc(sizeof(struct missile));
+        loop = list->firstMissile;
+        int x, y; // temp variables will be used to store the position of the current car
+        
+        while(loop != NULL){
+            x = loop->pos_x;
+            y = loop->pos_y;
+            
+            glColor3f(0.0f,0.0f,0.0f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            glTranslatef(y*missile_size,x*missile_size,0.0f);
+            glBegin(GL_QUADS);
+            glVertex3f(0.0f,0.0f,0.0f);
+            glVertex3f(missile_size,0.0f,0.0f);
+            glVertex3f(missile_size,missile_size,0.0f);
+            glVertex3f(0.0f,missile_size,0.0f);
+            glEnd();
+            
+            loop = loop->nextMissile;
         }
         free(loop);
     }
