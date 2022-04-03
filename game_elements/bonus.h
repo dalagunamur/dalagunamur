@@ -4,7 +4,7 @@
 struct bonus{
      int pos_x;
      int pos_y;
-     enum type {health, shield}; //will be defined at a later stage
+//     enum type {health, shield}; //will be defined at a later stage
      struct bonus *next_element;
 };
 

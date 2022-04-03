@@ -1,49 +1,49 @@
 #ifndef _CAR_H_
 #define _CAR_H_
 
-#define MAX_SIZE_NAME 20
-#define MAX_ENNEMY_COUNT 5
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <time.h>
 
-// structure de cours
-
-int ennemyCounter;
+// structures created to handle cars and list of cars
 
 struct car{
-	char name[MAX_SIZE_NAME];
+    int pos_x;
+    int pos_y;
 	int healthPoints;
-	struct car * next;
+    bool carFrozen; // cars will by default be MOVING, but can become FROZEN if hit by the special attack
+    bool carActive; // an inactive car means it must be deleted from the game, as it either reached the botton of the screen or was hit by the player's missile
+    struct car * previousCar;
+    struct car * nextCar;
 };
 
 typedef struct car * pCar;
 
-// functions handling with the chained list of cars
-pCar createCar(void);
-void addCar(pCar * list, pCar * newElement);
-void removeCar(pCar * list, pCar * elementToRemove);
-void displayCar(pCar list);
+struct carList{
+    int carCounter;
+    pCar firstCar;
+    pCar lastCar;
+};
 
+typedef struct carList * pCarList;
 
-// functions related to game features and impacting cars
-void damageAllCars(pCar * list);
+// global variables
+pCarList listOfCars;
+
+pCarList createCarList(void); // this function creates a list of cars as a pointer to struct carList. It is called when initializing the game
+pCar createCar(void); // this function creates a new car as a pointer to struct car, it is called each time a new car has to be created
+void addCar(pCarList list, pCar newCar); // adds a newly created car to the chained list of all cars, as new head
+void destroyCars(pCarList list); // remove all inactive cars from the list of cars to display on screen
+void moveCars(pCarList list); // make all cars move one row down
+
+void glutCreateCars(int timer);
+void glutMoveCars(int timer);
+void glutDestroyCars(int timer);
+
+void carFires(pCar car);
+void carHit(pCar car); // when the car is hit by the main weapon
+void carHitAlt(pCar car); // when the car is hit by the alternate weapon, it is frozen
+
 
 #endif
-
-/*
-
-#ifndef _CAR_H_
-#define _CAR_H_
-typedef struct car{
-     int pos_x;
-int pos_y;
-int status; // cars will by default be MOVING, but can become FROZEN if hit by the special attack
-int hp; // cars will have 1 health point, until the game reaches a certain difficulty level
-     car_t *next_element;
-} car_t;
-car_t create_car(); // to create a new instance of a car
-void move_car(car_t *car);
-void car_fires(car_t *car);
-void car_hit(); // when the car is hit by the main weapon
-void car_hit_alt(); // when the car is hit by the alternate weapon, it is frozen
-void destroy_car(car_t *car);
-#endif
-*/

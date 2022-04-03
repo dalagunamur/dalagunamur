@@ -5,7 +5,7 @@ struct missile{
     int pos_x;
     int pos_y;
     int speed;
-    enum direction {up,down,right,left};
+//    enum direction {up,down,right,left};
     struct missile *next_element;
 };
 

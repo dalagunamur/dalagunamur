@@ -14,6 +14,15 @@
 #include "game.h"
 #include "drawScreen.h"
 
+/*
+ INFORMATION ABOUT GLUT TIMERS
+ 0 = update of the map
+ 1 = creation of new cars
+ 2 = movement of the cars
+ 3 = destruction of inactive cars
+ */
+
+
 void initRendering(){
     glEnable(GL_DEPTH_TEST);
 }
@@ -28,7 +37,7 @@ void handleResize(int width,int heigth){
 void display(){
     glClearColor(0.0f,0.0f,0.0f,0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    play(mapToRender,p);
+    play(mapToRender,p,listOfCars);
     glFlush();
 }
 
@@ -36,21 +45,22 @@ int main(int argc, char *argv[]){
 
 	srand(time(NULL));
 	
-	// START INITIALIZE THE MAP
-	row=NULL;
-	map=NULL;
-    p=createPlayer();
+	// INITIALIZE THE MAP - THE PLAYER - THE LIST OF ENNEMY CARS
+	row = NULL;
+	map = NULL;
+    p = createPlayer();
+    listOfCars=createCarList();
     
-//    printf("map and row initiated\n");
+//    printf("Init completed\n");
     
     loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);
-//    printf("buffer full map created.\n");
+//    printf("Buffer full map created.\n");
     
-    for(int i=0;i<WINDOW_SIZE_X;i++){
-        row=createRow();
+    for(int i=0; i < WINDOW_SIZE_X; i++){
+        row = createRow();
         map = addRow(map, row);
     }
-//    printf("Chained list created\n");
+//    printf("Chained list for map created\n");
     updateMap(map);
 
 
@@ -59,13 +69,16 @@ int main(int argc, char *argv[]){
 
     glutInitWindowSize((WINDOW_SIZE_Y-2)*Square_size, WINDOW_SIZE_X*Square_size);
 
-    glutCreateWindow("VvV");
+    glutCreateWindow("Velo vs Voiture");
     initRendering();
 
     glutDisplayFunc(display);
 //    printf("screen created\n");
     glutReshapeFunc(handleResize);
     glutTimerFunc(1000, updateMap, 0);
+    glutTimerFunc(2000, glutCreateCars, 1);
+    glutTimerFunc(200, glutMoveCars, 2);
+    glutTimerFunc(100, glutDestroyCars, 3);
 //    printf("Looping to update the map\n");
 
     glEnable(GL_DEPTH_TEST);

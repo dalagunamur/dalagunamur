@@ -12,6 +12,7 @@
 #include <time.h>
 
 #include "player.h"
+#include "../map/map.h"
 //#include "../map/map.h"
 
 pPlayer createPlayer(){
@@ -42,7 +43,7 @@ void move_player_down(char **map){
     x = p->pos_x + 1;
     y = p->pos_y;
          
-    if ( (*(*(map + x) + y)!='#')  && (x < 39) ){
+    if ( (*(*(map + x) + y)!='#')  && x < (WINDOW_SIZE_X -1) ){
         p->pos_x = x;
     }
 }

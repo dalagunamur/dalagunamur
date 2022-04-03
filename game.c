@@ -44,9 +44,10 @@ void handleKeyboard(unsigned char input, int x, int y){
         }
 }
 
-void play(char **map, pPlayer p){
+void play(char **map, pPlayer p, pCarList list){
     drawMap();  //display the map on screen
-    drawPlayer(p);
+    drawPlayer(p); //display the player
+    drawCars(list); //display all the ennemies
     
     glutKeyboardFunc(handleKeyboard);        //fonction de glut gérant le clavier
     

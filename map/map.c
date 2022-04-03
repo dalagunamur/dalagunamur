@@ -77,11 +77,11 @@ void deleteRow(listMap map){
 
 void displayMap(listMap map){ // prints the whole map on screen
     mapToRender = malloc(sizeof(char *) * WINDOW_SIZE_X);
-    int i = 0;
+    int i;
     int j = 0;
     while (map != NULL){
         *(mapToRender + j) = malloc(sizeof(char *) * WINDOW_SIZE_Y);
-        for(int i = 0; i < MAP_SIZE_X; i++){
+        for(i = 0; i < MAP_SIZE_X; i++){
             mapToRender[j][i] = (*map).rowContent[i];
 		}
         j++;
