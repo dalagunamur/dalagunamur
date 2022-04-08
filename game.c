@@ -18,12 +18,14 @@
 #include "map/map.h"
 #include "game_elements/player.h"
 
+// These variables are assigned to store the action that was requested based on the keystroke, then read to trigger to right function corresponding to the action requested by the player
 bool MOVE_UP = false;
 bool MOVE_DOWN = false;
 bool MOVE_LEFT = false;
 bool MOVE_RIGHT = false;
 bool FIRE_MISSILE = false;
 
+// This function is called each time the player hits a key on the keyboard. In case the key pressed is one which is assigned a function, it records it
 void handleKeyboard(unsigned char input, int x, int y){
     switch(input)
         {
@@ -47,10 +49,12 @@ void handleKeyboard(unsigned char input, int x, int y){
         }
 }
 
+// This function drives the game, by requesting to draw the map on screen; then the cars, then the players and the missiles.
+// It also call the function to capture the key pressed by the player on the keyboard and handles the movements of the player.
 void play(char **map, pPlayer p, pCarList carList, pMissileList missileList){
     drawMap();  //display the map on screen
-    drawPlayer(p); //display the player
     drawCars(carList); //display all the ennemies
+    drawPlayer(p); //display the player
     drawMissiles(missileList); //display all the missiles
     
     glutKeyboardFunc(handleKeyboard);        //fonction de glut gérant le clavier

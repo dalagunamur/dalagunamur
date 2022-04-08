@@ -16,6 +16,7 @@
 #include "drawScreen.h"
 #include "game.h"
 
+// This function draws the player on the screen as a light blue square
 void drawPlayer(pPlayer p){
     int i, j;
     i = p->pos_x;
@@ -32,6 +33,8 @@ void drawPlayer(pPlayer p){
     glEnd();
 }
 
+// This function draws the map on the screen, by reading each character of the mapToRender matrix.
+// Each blank element is drawn as a grey square (road), each # as a white square (white lines on the side of the road), each B as a black square (border of the screen), each G as a light green square (grass), each T as a dark green square (trees), each H as a red square (Houses) and each @ as a yellow square (line in the center of the road)
 void drawMap(void){
     for (int j = 0; j < WINDOW_SIZE_X; ++j)
     {
@@ -166,7 +169,7 @@ void drawMap(void){
         }
 }
 
-
+// this function draws the cars as purple square on the screen
 void drawCars(pCarList list){
     if (list->firstCar != NULL ){ // if the list of all cars is not empty, draw the cars. If list of cars is empty, do nothing
         pCar loop;
@@ -195,6 +198,7 @@ void drawCars(pCarList list){
     }
 }
 
+// this function draws the missiles on the screen as small black squares
 void drawMissiles(pMissileList list){
     if (list->firstMissile != NULL ){ // if the list of all missiles is not empty, draw the misiles. If list of missiles is empty, do nothing
         pMissile loop;

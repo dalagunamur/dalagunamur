@@ -17,12 +17,13 @@
 #include "car.h"
 #include "player.h"
 
+// This function returns a new missile shot from the player. It will be called each time the player presses the key to shoot
 pMissile createMissileFromPlayer(void){
     pMissile missile;
     missile = (pMissile) malloc (sizeof(struct missile));
     
-    missile->pos_x = p->pos_x *2; //need to multiply the position of the car by 2, as the size of the missiles is 1/2 of those of the player
-    missile->pos_y = p->pos_y *2; //need to multiply the position of the car by 2, as the size of the missiles is 1/2 of those of the player
+    missile->pos_x = p->pos_x *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the player
+    missile->pos_y = p->pos_y *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the player
     missile->missileFromPlayer = true;
     missile->missileActive = true;
     missile->previousMissile = NULL;
@@ -32,20 +33,23 @@ pMissile createMissileFromPlayer(void){
     return missile;
 }
 
+// This function returns a new missile shot from a car. It is called periodically based on the function glutCreateMissileFromCar()
 pMissile createMissileFromCar(pCar car){
     pMissile missile;
     missile = (pMissile) malloc (sizeof(struct missile));
     
-    missile->pos_x = car->pos_x *2; //need to multiply the position of the car by 2, as the size of the missiles is 1/2 of those of the cars
-    missile->pos_y = car->pos_y *2; //need to multiply the position of the car by 2, as the size of the missiles is 1/2 of those of the cars
+    missile->pos_x = (car->pos_x+1) *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the cars
+    missile->pos_y = car->pos_y *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the cars
     missile->missileFromPlayer = false;
     missile->missileActive = true;
     missile->previousMissile = NULL;
     missile->nextMissile = NULL;
-    
+
+//    printf("New missile created with pos_x=%d and pos_y=%d\n",missile->pos_x,missile->pos_y);
     return missile;
 }
 
+// This function creates the list of all the missiles and is called during the initialization of the game
 pMissileList createMissileList(void){
     pMissileList missileList;
     missileList = (pMissileList) malloc (sizeof(struct missileList));
@@ -57,6 +61,7 @@ pMissileList createMissileList(void){
     return missileList;
 }
 
+// This function adds a missile to the list of all missiles
 void addMissile(pMissileList list, pMissile newMissile){
     if(list->firstMissile == NULL){ // in case the list is currently empty, add the newMissile as first and last element of the list
         list->firstMissile = newMissile;
@@ -71,8 +76,9 @@ void addMissile(pMissileList list, pMissile newMissile){
     list->missileCounter ++;
 }
 
+// This function moves all the missiles by one row up or down, depending if they were shot by the player or by a car, respectively
 void moveMissiles(pMissileList list){
-    if (list->firstMissile != NULL ){ // if the list of all missile is not empty, move the missiles. If list of missiles is empty, do nothing
+    if (list->firstMissile != NULL ){ // if the list of all missiles is not empty, move the missiles. If list of missiles is empty, do nothing
         pMissile loop;
         loop = (pMissile) malloc(sizeof(struct missile));
         loop = list->firstMissile;
@@ -100,6 +106,7 @@ void moveMissiles(pMissileList list){
     }
 }
 
+// This function destroy all the inactive missiles and removes them from the list of missiles
 void destroyMissiles(pMissileList list){
     if (list->firstMissile != NULL ){ // if the list of all missiles is not empty, check if some missiles have to be removed. If list of missiles is empty, do nothing
         pMissile loop;
@@ -158,5 +165,30 @@ void glutMoveMissiles(int timer){
 void glutDestroyMissiles(int timer){
     destroyMissiles(listOfMissiles);
     glutPostRedisplay();
-    glutTimerFunc(50, glutDestroyMissiles, 5);
+    glutTimerFunc(10, glutDestroyMissiles, 5);
+}
+
+// this function is used to trigger periodically the creation of new missiles shot by the cars
+void glutCreateMissileFromCar(int timer){
+    // in case there is at least one car on screen, then identify which car will shoot. If there is no car on screen, do nothing.
+    if(listOfCars->carCounter > 0){
+        // identify randomly one car that will shoot the missile
+        int i = rand() % listOfCars->carCounter;
+        int j = 0;
+        pCar loop;
+        loop = (pCar) malloc(sizeof(struct car));
+        loop = listOfCars->firstCar;
+        
+        while(j != i){
+            loop = loop->nextCar;
+            j++;
+        }
+        
+        // create a new missile and shoot it from the identified car
+        pMissile newMissile = createMissileFromCar(loop);
+        addMissile(listOfMissiles, newMissile);
+    }
+    
+    glutPostRedisplay();
+    glutTimerFunc(2000, glutCreateMissileFromCar, 6);
 }

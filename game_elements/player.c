@@ -13,8 +13,8 @@
 
 #include "player.h"
 #include "../map/map.h"
-//#include "../map/map.h"
 
+// this function returns the player, initializing its position on the map
 pPlayer createPlayer(){
     pPlayer p;
     p = (pPlayer) malloc (sizeof(struct player));
@@ -26,28 +26,29 @@ pPlayer createPlayer(){
     return p;
 }
 
+// this function moves the player up by one row, unless he's trying to access one of the top ten rows
 void move_player_up(char **map){
-    int x = 0, y = 0;
+    int x = 0;
     
     x = p->pos_x - 1;
-    y = p->pos_y;
-         
-    if ( (*(*(map + x) + y)!='#') && (x > 10) ){
+            
+    if (x > 10){
         p->pos_x = x;
     }
 }
 
+//this function moves the player down by one row, unless he's trying to access the last row
 void move_player_down(char **map){
-    int x = 0, y = 0;
+    int x = 0;
     
     x = p->pos_x + 1;
-    y = p->pos_y;
          
-    if ( (*(*(map + x) + y)!='#')  && x < (WINDOW_SIZE_X -1) ){
+    if (x < (WINDOW_SIZE_X -1) ){ //(*(*(map + x) + y)!='#') &&
         p->pos_x = x;
     }
 }
 
+// this function moves the player left by one column, unless he's trying to go out of the road
 void move_player_left(char **map){
     int x = 0, y = 0;
     
@@ -59,6 +60,7 @@ void move_player_left(char **map){
     }
 }
 
+// this function moves the player right by one column, unless he's trying to go out of the road
 void move_player_right(char **map){
     int x = 0, y = 0;
     x = p->pos_x;
@@ -68,10 +70,4 @@ void move_player_right(char **map){
         p->pos_y = y;
     }
 }
-
-void player_fires(); // fire the main weapon
-void player_fires_alt(); // fire the alternate weapon
-void player_collision(); // obstacle or car hits player
-void apply_bonus(); // player hits a bonus
-void player_loose_health();
 

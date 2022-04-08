@@ -14,12 +14,13 @@
 #include "car.h"
 #include "../map/map.h"
 
+// This function returns a new car, placing it on the first row of the screen, at a random position on the road
 pCar createCar(void){
 	pCar car;
     car = (pCar) malloc (sizeof(struct car));
     
     car->pos_x = 1;
-    car->pos_y = ( rand() % (WINDOW_SIZE_Y - 14) ) + 8; // cars must appear on the first row and on the road, not on the grass
+    car->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 8; // cars must appear on the first row and on the road, not on the grass
     car->healthPoints = 1;
     car->carFrozen = false; // by default a car is moving
     car->carActive = true;
@@ -29,6 +30,7 @@ pCar createCar(void){
 	return car;
 }
 
+// This function returns the list of all the cars, which stores the counter of the active cars + the head and tail of the chained list
 pCarList createCarList(void){
     pCarList carList;
     carList = (pCarList) malloc (sizeof(struct carList));
@@ -40,8 +42,9 @@ pCarList createCarList(void){
     return carList;
 }
 
+// This function adds a car to the list of all the cars
 void addCar(pCarList list, pCar newCar){
-    if(list->firstCar == NULL){ // in case the list is currently empty, add the newCar as first and last element of the list
+    if(list->firstCar == NULL){ // in case the list is currently empty, add the newCar as first and last element of the list (ie, the only one on the list)
         list->firstCar = newCar;
         list->lastCar = newCar;
     }
@@ -54,6 +57,7 @@ void addCar(pCarList list, pCar newCar){
     list->carCounter ++;
 }
 
+// This function moves all the cars down by one row
 void moveCars(pCarList list){
     if (list->firstCar != NULL ){ // if the list of all cars is not empty, move the cars. If list of cars is empty, do nothing
         pCar loop;
@@ -77,6 +81,7 @@ void moveCars(pCarList list){
     }
 }
 
+// This function destroy the inactive cars from the list of cars. It covers the various cases (car to remove is head, is tail, is both head and tail, is neither head nor tail)
 void destroyCars(pCarList list){
     if (list->firstCar != NULL ){ // if the list of all cars is not empty, check if some cars have to be removed. If list of cars is empty, do nothing
         pCar loop;
@@ -86,7 +91,7 @@ void destroyCars(pCarList list){
         while(loop != NULL){ // as long as we did not go through the whole list of cars, execute the following code
             if(loop->carActive == false){ // if the current car is inactive (ie, carActive == FALSE), then it must be deleted
 
-                // creating a temporary car to be deleted, and moving the loop to the next item (before the car is actually removed from the list; while the link to the next one is still valid)
+                // creating a temporary car to be deleted, and moving the loop to the next item (before the car is actually removed from the list, while the link to the next one is still valid)
                 pCar carToDelete;
                 carToDelete = (pCar) malloc(sizeof(struct car));
                 carToDelete = loop;
@@ -124,7 +129,7 @@ void destroyCars(pCarList list){
     }
 }
 
-// this function is used to trigger the creation of new cars periodically
+// this function is used to trigger the creation of a new car periodically
 void glutCreateCars(int timer){
     pCar newCar = createCar();
     addCar(listOfCars, newCar);
@@ -136,7 +141,7 @@ void glutCreateCars(int timer){
 void glutMoveCars(int timer){
     moveCars(listOfCars);
     glutPostRedisplay();
-    glutTimerFunc(300, glutMoveCars, 2);
+    glutTimerFunc(500, glutMoveCars, 2);
 }
 
 // this function is used to trigger the removal of inactive cars periodically

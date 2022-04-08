@@ -13,8 +13,8 @@
 
 #include "map.h"
 
-bool loadMapFile(int x, int y)		//fonction qui ouvre le fichier txt et charge la carte dans le tableau
-{
+// This function loads the .txt file containing the map into a table. The table will in turn be read each time a new row will be added to the map to be displayed on screen
+bool loadMapFile(int x, int y){
 	fullMap = malloc(sizeof(char *) * x);
     FILE *f = NULL;
     f = fopen("map/map.txt", "r");
@@ -44,6 +44,7 @@ bool loadMapFile(int x, int y)		//fonction qui ouvre le fichier txt et charge la
 }
 
 
+// This function reads a random row from the map loaded in a table and returns the row
 listMap createRow(void){
 	listMap row;
 	row = (listMap) malloc (sizeof(struct mapRow));
@@ -59,11 +60,13 @@ listMap createRow(void){
 	return row;
 }
 
-listMap addRow(listMap map, listMap newRow){ // adds newRow as new head of map and returns the new head
+// This function adds newRow as new head of the chained list and returns the new head opf the list
+listMap addRow(listMap map, listMap newRow){
  	(*newRow).nextRow = map;
  	return newRow;
 }
 
+// This function deletes the last row in the list currently displayed on screen
 void deleteRow(listMap map){
 	listMap temp = map;
 	while(temp->nextRow->nextRow != NULL){
@@ -75,6 +78,7 @@ void deleteRow(listMap map){
 
 }
 
+// This function copies each row of the chained list into one table with x and y coordinates. This "mapToRender" is updated each time the map scrolls and is then displayed on screen via the function drawMap()
 void displayMap(listMap map){ // prints the whole map on screen
     mapToRender = malloc(sizeof(char *) * WINDOW_SIZE_X);
     int i;
@@ -89,6 +93,7 @@ void displayMap(listMap map){ // prints the whole map on screen
  	}
 }
 
+// This function is called each time the map needs to scroll (via the glutTimerFunc callback). It deletes the last row of the map (appearing at the bottom of the screen) and adds a new random row as first row of the screen, then request to redisplay of the map on screen
 void updateMap(int timer){
     free(mapToRender);
     deleteRow(map);
@@ -99,6 +104,6 @@ void updateMap(int timer){
     displayMap(map);
 //    printf("mapToRender populated\n");
     glutPostRedisplay();
-    glutTimerFunc(1000, updateMap, 0);
+    glutTimerFunc(2000, updateMap, 0);
 //    printf("updateMap processing finished\n");
 }
