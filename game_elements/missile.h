@@ -6,6 +6,9 @@
 #include <stdbool.h>
 #include "car.h"
 
+#define MAX_NBR_MISSILE_CARS 15
+#define MAX_NBR_MISSILE_PLAYER 10
+
 // This structure is used to create the missiles, shot from the player or from a car
 struct missile{
     int pos_x;
@@ -22,7 +25,8 @@ typedef struct missile * pMissile;
 
 // This structure is used to list all the missiles currently displayed on screen
 struct missileList{
-    int missileCounter;
+    int carsMissileCounter;
+    int playerMissileCounter;
     struct missile * firstMissile;
     struct missile * lastMissile;
 };

@@ -22,8 +22,8 @@ pMissile createMissileFromPlayer(void){
     pMissile missile;
     missile = (pMissile) malloc (sizeof(struct missile));
     
-    missile->pos_x = p->pos_x *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the player
-    missile->pos_y = p->pos_y *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the player
+    missile->pos_x = p->pos_x *2; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the player
+    missile->pos_y = p->pos_y *2; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the player
     missile->missileFromPlayer = true;
     missile->missileActive = true;
     missile->previousMissile = NULL;
@@ -38,8 +38,8 @@ pMissile createMissileFromCar(pCar car){
     pMissile missile;
     missile = (pMissile) malloc (sizeof(struct missile));
     
-    missile->pos_x = (car->pos_x+1) *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the cars
-    missile->pos_y = car->pos_y *2; //need to multiply the position of the missile by 2, as the size of the missiles is 1/2 of those of the cars
+    missile->pos_x = (car->pos_x *2) +8; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the cars
+    missile->pos_y = (car->pos_y *2) +2; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the cars
     missile->missileFromPlayer = false;
     missile->missileActive = true;
     missile->previousMissile = NULL;
@@ -54,7 +54,8 @@ pMissileList createMissileList(void){
     pMissileList missileList;
     missileList = (pMissileList) malloc (sizeof(struct missileList));
     
-    missileList->missileCounter = 0;
+    missileList->carsMissileCounter = 0;
+    missileList->playerMissileCounter = 0;
     missileList->firstMissile = NULL;
     missileList->lastMissile = NULL;
     
@@ -72,8 +73,13 @@ void addMissile(pMissileList list, pMissile newMissile){
         list->firstMissile->previousMissile = newMissile;
         list->firstMissile = newMissile;
     }
-    // increase by 1 the number of missiles in the list
-    list->missileCounter ++;
+    // increase by 1 the number of missiles in the list (for the player count or the ennemy count)
+    if(newMissile->missileFromPlayer == true){
+        list->playerMissileCounter ++;
+    }
+    else{
+        list->carsMissileCounter ++;
+    }
 }
 
 // This function moves all the missiles by one row up or down, depending if they were shot by the player or by a car, respectively
@@ -100,6 +106,7 @@ void moveMissiles(pMissileList list){
                 loop->pos_x = x;
                 loop->missileActive = false;
             }
+//            printf("Missile pos_x= %i, pos_y=%i\n",loop->pos_x,loop->pos_y);
             loop = loop->nextMissile;
         }
         free(loop);
@@ -142,9 +149,14 @@ void destroyMissiles(pMissileList list){
                     missileToDelete->nextMissile->previousMissile = missileToDelete->previousMissile;
                 }
             
-                // the missile to delete can be removed from memory + the counter of all missiles can be reduced by 1
+                // the missile to delete can be removed from memory + the counter of all missiles can be reduced by 1, either for the player or the cars
+                if(missileToDelete->missileFromPlayer == true){
+                    list->playerMissileCounter --;
+                }
+                else{
+                    list->carsMissileCounter --;
+                }
                 free(missileToDelete);
-                list->missileCounter --;
             }
             else{ // if the current Car is still active, do nothing
                 loop = loop->nextMissile;

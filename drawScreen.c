@@ -187,9 +187,9 @@ void drawCars(pCarList list){
             glTranslatef(y*Square_size,x*Square_size,0.0f);
             glBegin(GL_QUADS);
             glVertex3f(0.0f,0.0f,0.0f);
-            glVertex3f(Square_size,0.0f,0.0f);
-            glVertex3f(Square_size,Square_size,0.0f);
-            glVertex3f(0.0f,Square_size,0.0f);
+            glVertex3f(Square_size*2,0.0f,0.0f);
+            glVertex3f(Square_size*2,Square_size*4,0.0f);
+            glVertex3f(0.0f,Square_size*4,0.0f);
             glEnd();
             
             loop = loop->nextCar;

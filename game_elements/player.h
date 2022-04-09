@@ -26,13 +26,12 @@ void move_player_up(char **map); // this function moves the player up by one row
 void move_player_down(char **map); // this function moves the player down by one row, unless if reaching the lowest row
 void move_player_left(char **map); // this function moves the player left by one column, unless if reaching the left side of the road
 void move_player_right(char **map); // this function moves the player right by one column, unless if reaching the right side of the road
-
+void player_loose_health(pPlayer player); // this function is used to reduce the health points count of the player. If it reaches 0, the game ends
 
 // NOT IMPLEMENTED YET
 void player_fires(); // fire the main weapon
 void player_fires_alt(); // fire the alternate weapon
 void player_collision(); // obstacle or car hits player
 void apply_bonus(); // player hits a bonus
-void player_loose_health();
 
 #endif

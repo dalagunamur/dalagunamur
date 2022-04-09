@@ -20,8 +20,8 @@ pCar createCar(void){
     car = (pCar) malloc (sizeof(struct car));
     
     car->pos_x = 1;
-    car->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 8; // cars must appear on the first row and on the road, not on the grass
-    car->healthPoints = 1;
+    car->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 7; // cars must appear on the first row and on the road, not on the grass
+    car->healthPoints = (rand() %2) + 1; // cars have either 1 or 2 health points
     car->carFrozen = false; // by default a car is moving
     car->carActive = true;
     car->previousCar = NULL;
@@ -75,6 +75,7 @@ void moveCars(pCarList list){
                 loop->pos_x = x;
                 loop->carActive = false;
             }
+//            printf("Car pos_x= %i, pos_y=%i\n",loop->pos_x,loop->pos_y);
             loop = loop->nextCar;
         }
         free(loop);
@@ -134,7 +135,7 @@ void glutCreateCars(int timer){
     pCar newCar = createCar();
     addCar(listOfCars, newCar);
     glutPostRedisplay();
-    glutTimerFunc(2000, glutCreateCars, 1);
+    glutTimerFunc(4000, glutCreateCars, 1);
 }
 
 // this function is used to trigger the movement of existing cars periodically + flagging them as inactive if they reach the bottom of the screen
@@ -149,4 +150,13 @@ void glutDestroyCars(int timer){
     destroyCars(listOfCars);
     glutPostRedisplay();
     glutTimerFunc(100, glutDestroyCars, 3);
+}
+
+// This function is used to reduce the health points count of a car. If the HP drop to 0, the car is deactivated
+void carHit(pCar car){
+    car->healthPoints --;
+    
+    if (car->healthPoints <= 0){
+        car->carActive = false;
+    }
 }

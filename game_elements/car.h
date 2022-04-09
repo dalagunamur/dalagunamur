@@ -41,10 +41,9 @@ void moveCars(pCarList list); // make all the cars move one row down
 void glutCreateCars(int timer); // calls the functions related to the creation of a new car following a given timer, and handles the callback via glutTimerFunc()
 void glutMoveCars(int timer); // calls the functions related to the movement of the cars following a given timer, and handles the callback via glutTimerFunc()
 void glutDestroyCars(int timer); // calls the functions related to the destruction of all inactive cars following a given timer, and handles the callback via glutTimerFunc()
-
+void carHit(pCar car); // this function is called whenever a car is hit by a missile shot from the player. It reduces its health by 1 and if the health drops to 0, the car is deactivated
 
 // NOT IMPLEMENTED YET
-void carHit(pCar car);
 void carHitAlt(pCar car);
 
 

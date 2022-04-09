@@ -71,3 +71,12 @@ void move_player_right(char **map){
     }
 }
 
+// This function is used to reduce the health points count of the player. If the HP drop to 0, the player has lost and the game ends
+void player_loose_health(pPlayer player){
+    player->health_points --;
+    
+    if (player->health_points <= 0){
+        printf("GAME OVER\n");
+        exit(0);
+    }
+}
