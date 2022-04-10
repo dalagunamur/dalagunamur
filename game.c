@@ -23,7 +23,7 @@ bool MOVE_LEFT = false;
 bool MOVE_RIGHT = false;
 bool FIRE_MISSILE = false;
 
-pGame createGame(char **mapForGame, pPlayer player, pCarList carList, pMissileList missileList){
+pGame createGame(void){
     pGame game;
     game = (pGame) malloc (sizeof(struct game));
 
@@ -31,12 +31,6 @@ pGame createGame(char **mapForGame, pPlayer player, pCarList carList, pMissileLi
     game->score = 0;
     game->difficulty = 0;
     game->verticalScrolling = true; // by default, will be set to True meaning the screen will scroll vertically. In a future version, if set to false, the screen will scroll horizontally, from the right to the left
-    game->map = mapForGame;
-    game->player = player;
-    game->cars = carList;
-    game->missiles = missileList;
-//    game->bonuses = bonusList;
-//    game->obtacles = obstacleList;
     
     return game;
 }
@@ -67,8 +61,9 @@ void handleKeyboard(unsigned char input, int x, int y){
 
 // This function drives the game, by requesting to draw the map on screen; then the cars, then the players and the missiles.
 // It also call the function to capture the key pressed by the player on the keyboard and handles the movements of the player.
-void play(char **map, pPlayer p, pCarList carList, pMissileList missileList){
+void play(pGame game, char **map, pPlayer p, pCarList carList, pMissileList missileList, pObstacleList obstacleList){
     drawMap();  //display the map on screen
+    drawObstacles(obstacleList); // display all the obstacles on the screen
     drawCars(carList); //display all the ennemies
     drawPlayer(p); //display the player
     drawMissiles(missileList); //display all the missiles
@@ -98,43 +93,9 @@ void play(char **map, pPlayer p, pCarList carList, pMissileList missileList){
         }
         FIRE_MISSILE = false;
     }
-
-    glutPostRedisplay();
-}
-
-// This function drives the game, by requesting to draw the map on screen; then the cars, then the players and the missiles.
-// It also call the function to capture the key pressed by the player on the keyboard and handles the movements of the player.
-void playAlt(pGame game){
-    drawMap();  //display the map on screen
-    drawCars(game->cars); //display all the ennemies
-    drawPlayer(game->player); //display the player
-    drawMissiles(game->missiles); //display all the missiles
     
-    glutKeyboardFunc(handleKeyboard);        //fonction de glut gérant le clavier
-    
-    if (MOVE_UP){
-        move_player_up(game->map);
-        MOVE_UP = false;
-    }
-    if (MOVE_DOWN){
-        move_player_down(game->map);
-        MOVE_DOWN = false;
-    }
-    if (MOVE_LEFT){
-        move_player_left(game->map);
-        MOVE_LEFT = false;
-    }
-    if (MOVE_RIGHT){
-        move_player_right(game->map);
-        MOVE_RIGHT = false;
-    }
-    if (FIRE_MISSILE){
-        if(listOfMissiles->playerMissileCounter <= MAX_NBR_MISSILE_PLAYER){
-            pMissile newMissile = createMissileFromPlayer();
-            addMissile(listOfMissiles, newMissile);
-        }
-        FIRE_MISSILE = false;
-    }
+    game->timer++;
+    game->score++;
 
     glutPostRedisplay();
 }
@@ -187,13 +148,97 @@ void checkMissileImpactsCar(pCar car, pMissile missile){
     if(impactX && impactY){
         missile->missileActive = false;
         carHit(car);
+        theGame->score++;
     }
 }
 
 // this function checks for all the potential impacts between elements of the game
 void glutCheckImpacts(int timer){
     checkImpactCars(listOfCars, listOfMissiles);
+    checkMissileImpactsPlayer(p, listOfMissiles);
+    checkCarsImpactPlayer(p,listOfCars);
     
     glutPostRedisplay();
     glutTimerFunc(10, glutCheckImpacts, 7);
+}
+
+// this function scans through all the missiles in game that were shot from a car and compares their position to the one of the player
+void checkMissileImpactsPlayer(pPlayer player, pMissileList missileList){
+    if(missileList->firstMissile != NULL){ //if there's at least one missile in the list, perform the scan. Else do nothing
+        // creating a temporary missile to scan through the list of all missiles
+        pMissile loopMissile;
+        loopMissile = (pMissile) malloc(sizeof(struct missile));
+        loopMissile = missileList->firstMissile;
+
+        int x = player->pos_x;
+        int y = player->pos_y;
+        bool impactX = false;
+        bool impactY = false;
+    
+        while(loopMissile != NULL){
+            if(loopMissile->missileFromPlayer==false){ // if the missile has been shot by a car, check the coordinates of the missile vs the ones of the player, else do nothing
+                // the size of the player on the screen is twice that of a missile, this impacts the check on the coordindates
+                if( (loopMissile->pos_x >= x*2) && (loopMissile->pos_x <= (x*2)+1) ){
+                    impactX = true;
+                }
+                
+                // the size of the player on the screen is twice that of a missile, this impacts the check on the coordindates
+                if( (loopMissile->pos_y >= y*2) && (loopMissile->pos_y <= (y*2)+1) ){
+                    impactY = true;
+                }
+                
+                // if both x and y coordinates indicate an impact, the missile is deactivated and the function player_loose_health() is called to reduce the health points of the player
+                if(impactX && impactY){
+                    loopMissile->missileActive = false;
+                    player_loose_health(player);
+                }
+            }
+            // resetting the values for the next missile
+            impactX = false;
+            impactY = false;
+            
+            loopMissile = loopMissile->nextMissile;
+        }
+        free(loopMissile);
+    }
+}
+
+// this function scans through all the cars in game and compares their coordinates with the one of the player to identify if there is an impact (car driving over player)
+void checkCarsImpactPlayer(pPlayer player, pCarList carList){
+    if(carList->firstCar !=NULL){ // if there's at least one car in the list, perform the scan. Otherwise, do nothing
+        // creating a temporary car to scan through the list of all cars
+        pCar loopCar;
+        loopCar = (pCar) malloc(sizeof(struct car));
+        loopCar = carList->firstCar;
+        
+        int x = player->pos_x;
+        int y = player->pos_y;
+        bool impactX = false;
+        bool impactY = false;
+        
+        while(loopCar != NULL){
+            // the car is 4 times as long as the player
+            if( (loopCar->pos_x >= x-3) && (loopCar->pos_x <= x) ){
+                impactX = true;
+            }
+            
+            // the car is twice as wide as the player
+            if( (loopCar->pos_y >= y-1) && (loopCar->pos_y <= y) ){
+                impactY = true;
+            }
+            
+            // if both x and y coordinates indicate an impact, the car is deactivated (the player's bike is very though !!) and the function player_loose_health() is called to reduce the health points of the player
+            if(impactX && impactY){
+                loopCar->carActive = false;
+                player_loose_health(player);
+            }
+            
+            // resetting the values for the next car
+            impactX = false;
+            impactY = false;
+            
+            loopCar = loopCar->nextCar;
+        }
+        free(loopCar);
+    }
 }

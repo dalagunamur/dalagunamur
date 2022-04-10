@@ -204,7 +204,7 @@ void drawMissiles(pMissileList list){
         pMissile loop;
         loop = (pMissile) malloc(sizeof(struct missile));
         loop = list->firstMissile;
-        int x, y; // temp variables will be used to store the position of the current car
+        int x, y; // temp variables will be used to store the position of the current missile
         
         while(loop != NULL){
             x = loop->pos_x;
@@ -222,6 +222,35 @@ void drawMissiles(pMissileList list){
             glEnd();
             
             loop = loop->nextMissile;
+        }
+        free(loop);
+    }
+}
+
+// this function draws the obstacles on the screen as dark grey squares
+void drawObstacles(pObstacleList list){
+    if (list->firstObstacle != NULL ){ // if the list of all obstacles is not empty, draw the obstacles. If list of obstacles is empty, do nothing
+        pObstacle loop;
+        loop = (pObstacle) malloc(sizeof(struct obstacle));
+        loop = list->firstObstacle;
+        int x, y; // temp variables will be used to store the position of the current obstacle
+        
+        while(loop != NULL){
+            x = loop->pos_x;
+            y = loop->pos_y;
+            
+            glColor3f(0.1f,0.1f,0.1f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            glTranslatef(y*Square_size,x*Square_size,0.0f);
+            glBegin(GL_QUADS);
+            glVertex3f(0.0f,0.0f,0.0f);
+            glVertex3f(Square_size*2,0.0f,0.0f);
+            glVertex3f(Square_size*2,Square_size*2,0.0f);
+            glVertex3f(0.0f,Square_size*2,0.0f);
+            glEnd();
+            
+            loop = loop->nextObstacle;
         }
         free(loop);
     }

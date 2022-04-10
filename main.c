@@ -16,14 +16,15 @@
 
 /*
  INFORMATION ABOUT GLUT TIMERS
- 0 = update of the map
+ 0 = update of the map and obstacles
  1 = creation of new cars
  2 = movement of the cars
- 3 = destruction of inactive cars
+ 3 = destruction of inactive cars and obstacles
  4 = movement of the missiles
  5 = destruction of inactive missiles
  6 = cars shooting missiles
  7 = check for impacts
+ 8 = creation of obstacles
  */
 
 
@@ -42,8 +43,7 @@ void handleResize(int width,int heigth){
 void display(){
     glClearColor(0.0f,0.0f,0.0f,0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    play(mapToRender, p, listOfCars, listOfMissiles);
-//    playAlt(theGame);
+    play(theGame,mapToRender, p, listOfCars, listOfMissiles, listOfObstacles);
     glFlush();
 }
 
@@ -57,6 +57,7 @@ int main(int argc, char *argv[]){
     p = createPlayer();
     listOfCars = createCarList();
     listOfMissiles = createMissileList();
+    listOfObstacles = createObstacleList();
         
     loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);
 //    printf("Buffer full map created.\n");
@@ -66,8 +67,9 @@ int main(int argc, char *argv[]){
         map = addRow(map, row);
     }
 //    printf("Chained list for map created\n");
-    updateMap(map);
-//    theGame = createGame(mapToRender, p, listOfCars, listOfMissiles);
+//    updateMap(map);
+    displayMap(map);
+    theGame = createGame();
 //    printf("Init completed\n");
 
     // GLUT CREATION OF THE WINDOW
@@ -86,10 +88,12 @@ int main(int argc, char *argv[]){
     glutTimerFunc(1000, glutCreateCars, 1);
     glutTimerFunc(500, glutMoveCars, 2);
     glutTimerFunc(100, glutDestroyCars, 3);
+    glutTimerFunc(100, glutDestroyObstacles, 3);
     glutTimerFunc(50, glutMoveMissiles, 4);
     glutTimerFunc(10, glutDestroyMissiles, 5);
     glutTimerFunc(2000, glutCreateMissileFromCar, 6);
     glutTimerFunc(10, glutCheckImpacts, 7);
+    glutTimerFunc(6000, glutCreateObstacle, 8);
 
     glEnable(GL_DEPTH_TEST);
     glutMainLoop();

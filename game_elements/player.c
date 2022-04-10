@@ -13,6 +13,7 @@
 
 #include "player.h"
 #include "../map/map.h"
+#include "../game.h"
 
 // this function returns the player, initializing its position on the map
 pPlayer createPlayer(){
@@ -74,9 +75,12 @@ void move_player_right(char **map){
 // This function is used to reduce the health points count of the player. If the HP drop to 0, the player has lost and the game ends
 void player_loose_health(pPlayer player){
     player->health_points --;
+    printf("\n!! PLAYER HAS BEEN HIT !! - %i HP remaining\n",player->health_points);
     
     if (player->health_points <= 0){
-        printf("GAME OVER\n");
+        printf("\nGAME OVER\n");
+        printf("Final time: %i\n",theGame->timer);
+        printf("Final score: %i\n",theGame->score);
         exit(0);
     }
 }
