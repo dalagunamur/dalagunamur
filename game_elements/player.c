@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 #include <time.h>
 
 #include "player.h"
 #include "../map/map.h"
 #include "../game.h"
+#include "bonus.h"
 
 // this function returns the player, initializing its position on the map
 pPlayer createPlayer(){
@@ -82,5 +82,25 @@ void player_loose_health(pPlayer player){
         printf("Final time: %i\n",theGame->timer);
         printf("Final score: %i\n",theGame->score);
         exit(0);
+    }
+}
+
+// This function is used to apply a bonus to the player. A bonus can heal one lost health point or allow to fire some extra missiles, or both
+void apply_bonus(pPlayer player, pBonus bonus){
+    // if the bonus has the type health, it can grant back one hp to the player
+    if(bonus->typeHealth == true){
+        if(player->health_points < 3){
+            player->health_points ++;
+            printf("Bonus heals 1 HP - %i HP remaining\n",player->health_points);
+        }
+        else{
+            printf("Max HP already - %i HP remaining\n",player->health_points);
+        }
+    }
+    
+    // if the bonus has the type missile, it increases the max number of missiles that can be shot
+    if(bonus->typeMissile == true){
+        maxNbrMissilesPlayer = maxNbrMissilesPlayer +2;
+        printf("Bonus grants new missiles - Max nbr now %i\n",maxNbrMissilesPlayer);
     }
 }

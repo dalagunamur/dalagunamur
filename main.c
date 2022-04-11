@@ -24,7 +24,7 @@
  5 = destruction of inactive missiles
  6 = cars shooting missiles
  7 = check for impacts
- 8 = creation of obstacles
+ 8 = creation of obstacles and bonuses
  */
 
 
@@ -43,35 +43,40 @@ void handleResize(int width,int heigth){
 void display(){
     glClearColor(0.0f,0.0f,0.0f,0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    play(theGame,mapToRender, p, listOfCars, listOfMissiles, listOfObstacles);
+    play(theGame,mapToRender, p, listOfCars, listOfMissiles, listOfObstacles, listOfBonuses);
     glFlush();
 }
 
 int main(int argc, char *argv[]){
 
-	srand(time(NULL));
+	srand(time(NULL)); // to allow the usage of random values
 	
-	// INITIALIZE THE MAP - THE PLAYER - THE LIST OF ENNEMY CARS
+	// INITIALIZE THE MAP - THE PLAYER - THE LISTS OF CARS, MISSILES, BONUSES AND OBSTACLES
 	row = NULL;
 	map = NULL;
     p = createPlayer();
     listOfCars = createCarList();
     listOfMissiles = createMissileList();
     listOfObstacles = createObstacleList();
+    listOfBonuses = createListBonuses();
+    maxNbrMissilesPlayer = 10; // initially setting the max nbr of missiles a player can shoot at the same time to 10
         
     loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);
-//    printf("Buffer full map created.\n");
-    
     for(int i=0; i < WINDOW_SIZE_X; i++){
         row = createRow();
         map = addRow(map, row);
     }
-//    printf("Chained list for map created\n");
-//    updateMap(map);
     displayMap(map);
     theGame = createGame();
-//    printf("Init completed\n");
-
+    // END OF INITIALIZATION
+    
+    // TEMP SOLUTION TO DISPLAY INITIAL VALUES - UNTIL INTEGRATED IN GLUT
+    printf("\n********** INSTRUCTIONS **********\n");
+    printf("Press 'z' to move up, 's' to move down, 'q' to move left and 'd' to move right\n");
+    printf("Press the space bar to shoot towards the incoming cars.\n");
+    printf("\n********** THE GAME STARTS **********\n");
+    printf("Player's HP = %i - Current Max Nbr of missiles = %i\n\n",p->health_points,maxNbrMissilesPlayer);
+    
     // GLUT CREATION OF THE WINDOW
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
@@ -89,11 +94,14 @@ int main(int argc, char *argv[]){
     glutTimerFunc(500, glutMoveCars, 2);
     glutTimerFunc(100, glutDestroyCars, 3);
     glutTimerFunc(100, glutDestroyObstacles, 3);
+    glutTimerFunc(100, glutDestroyBonuses, 3);
     glutTimerFunc(50, glutMoveMissiles, 4);
     glutTimerFunc(10, glutDestroyMissiles, 5);
     glutTimerFunc(2000, glutCreateMissileFromCar, 6);
     glutTimerFunc(10, glutCheckImpacts, 7);
     glutTimerFunc(6000, glutCreateObstacle, 8);
+    glutTimerFunc(10000, glutCreateBonus, 8);
+    
 
     glEnable(GL_DEPTH_TEST);
     glutMainLoop();

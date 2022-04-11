@@ -29,7 +29,6 @@ pMissile createMissileFromPlayer(void){
     missile->previousMissile = NULL;
     missile->nextMissile = NULL;
     
-//    printf("New missile created with pos_x=%d and pos_y=%d\n",missile->pos_x,missile->pos_y);
     return missile;
 }
 
@@ -38,14 +37,13 @@ pMissile createMissileFromCar(pCar car){
     pMissile missile;
     missile = (pMissile) malloc (sizeof(struct missile));
     
-    missile->pos_x = (car->pos_x *2) +8; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the cars
-    missile->pos_y = (car->pos_y *2) +2; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the cars
+    missile->pos_x = (car->pos_x *2) +8; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the cars and +8 to appear in front of the car
+    missile->pos_y = (car->pos_y *2) +2; //need to multiply the position of the missile by 2, as the size of the missile square is 1/2 of those of the cars and +2 to appear centered vs the car
     missile->missileFromPlayer = false;
     missile->missileActive = true;
     missile->previousMissile = NULL;
     missile->nextMissile = NULL;
 
-//    printf("New missile created with pos_x=%d and pos_y=%d\n",missile->pos_x,missile->pos_y);
     return missile;
 }
 
@@ -106,7 +104,6 @@ void moveMissiles(pMissileList list){
                 loop->pos_x = x;
                 loop->missileActive = false;
             }
-//            printf("Missile pos_x= %i, pos_y=%i\n",loop->pos_x,loop->pos_y);
             loop = loop->nextMissile;
         }
         free(loop);

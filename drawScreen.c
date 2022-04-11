@@ -255,3 +255,32 @@ void drawObstacles(pObstacleList list){
         free(loop);
     }
 }
+
+// this function draws the bonuses on the screen as pink squares
+void drawBonuses(pBonusList list){
+    if (list->firstBonus != NULL ){ // if the list of all bonuses is not empty, draw the bonus. If list of bonuses is empty, do nothing
+        pBonus loop; // creating a temp variable to go through the loop
+        loop = (pBonus) malloc(sizeof(struct bonus));
+        loop = list->firstBonus;
+        int x, y; // temp variables will be used to store the position of the current bonus
+        
+        while(loop != NULL){
+            x = loop->pos_x;
+            y = loop->pos_y;
+            
+            glColor3f(0.737255f,0.560784f,0.560784f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            glTranslatef(y*Square_size,x*Square_size,0.0f);
+            glBegin(GL_QUADS);
+            glVertex3f(0.0f,0.0f,0.0f);
+            glVertex3f(Square_size,0.0f,0.0f);
+            glVertex3f(Square_size,Square_size,0.0f);
+            glVertex3f(0.0f,Square_size,0.0f);
+            glEnd();
+            
+            loop = loop->nextBonus;
+        }
+        free(loop);
+    }
+}

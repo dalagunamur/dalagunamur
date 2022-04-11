@@ -1,6 +1,8 @@
 #ifndef _OBSTACLE_H_
 #define _OBSTACLE_H_
 
+#include <stdbool.h>
+
 struct obstacle{
     int pos_x;
     int pos_y;

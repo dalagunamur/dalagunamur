@@ -1,11 +1,6 @@
 #ifndef _CAR_H_
 #define _CAR_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-
 // structures created to handle cars and list of cars
 struct car{
     int pos_x;

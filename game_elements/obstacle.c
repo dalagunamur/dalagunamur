@@ -54,9 +54,9 @@ void addObstacle(pObstacleList obstacleList, pObstacle newObstacle){
     obstacleList->obstacleCounter ++;
 }
 
-// This function moves all the missiles by one row up or down, depending if they were shot by the player or by a car, respectively
+// This function moves all the obstacles by one
 void moveObstacles(pObstacleList list){
-    if (list->firstObstacle != NULL ){ // if the list of all missiles is not empty, move the missiles. If list of missiles is empty, do nothing
+    if (list->firstObstacle != NULL ){ // if the list of all obstacles is not empty, move the obstacles. If list of obstacles is empty, do nothing
         pObstacle loop;
         loop = (pObstacle) malloc(sizeof(struct obstacle));
         loop = list->firstObstacle;

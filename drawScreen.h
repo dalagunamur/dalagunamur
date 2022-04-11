@@ -6,6 +6,7 @@
 #include "game_elements/car.h"
 #include "game_elements/missile.h"
 #include "game_elements/obstacle.h"
+#include "game_elements/bonus.h"
 #define Square_size 20.0
 #define missile_size 10.0
 
@@ -13,6 +14,7 @@ void drawMap(void); //this function draws the map on the screen, out of the mapT
 void drawPlayer(pPlayer p); // this function draws the player on the screen
 void drawCars(pCarList list); // this function draws all the cars on the screen
 void drawMissiles(pMissileList list); // this function draws all the missiles on the screen
-void drawObstacles(pObstacleList list); // this function draws all the missiles on the screen
+void drawObstacles(pObstacleList list); // this function draws all the obstacles on the screen
+void drawBonuses(pBonusList list); // this function draws all the bonuses on the screen
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
+#include <stdbool.h>
+
 #include "map/map.h"
 #include "game_elements/bonus.h"
 #include "game_elements/car.h"
@@ -25,15 +27,17 @@ pGame theGame;
 
 pGame createGame(void); // initialize a new game or load an existing game
 void handleKeyboard(unsigned char input, int x, int y); // this function is used to capture the key pressed by the player and trigger the ad hoc function in case it is a binded key
-void play(pGame game, char **map, pPlayer p, pCarList carlist, pMissileList missileList, pObstacleList obstacleList); // this function drives the various sequences of the game
-
-void checkImpactCars(pCarList carList, pMissileList missileList); //This function scans through all the missiles and the cars and calls the function checkMissileImpactsCar() to identify if there's an impact for each combination
-void checkMissileImpactsCar(pCar car, pMissile missile); //This function compares the coordinates of a missile with those of a car to identify if there is an impact
-
-void checkMissileImpactsPlayer(pPlayer player, pMissileList missileList); //This function compares the coordinates of each missile shot from a car with those of the player to identify if there is an impact
-void checkCarsImpactPlayer(pPlayer player, pCarList carList); //This function compares the coordinates of each car with those of the player to identify if there is an impact
+void play(pGame game, char **map, pPlayer p, pCarList carlist, pMissileList missileList, pObstacleList obstacleList, pBonusList bonusList); // this function drives the various sequences of the game
 
 void glutCheckImpacts(int timer); // this function is used to call the various functions checking for impacts between all the elements of the game, and uses the glut callback functionality via glutTimerFunc()
+void checkImpactCars(pCarList carList, pMissileList missileList); //This function scans through all the missiles and the cars and calls the function checkMissileImpactsCar() to identify if there's an impact for each combination
+void checkMissileImpactsCar(pCar car, pMissile missile); //This function compares the coordinates of a missile with those of a car to identify if there is an impact
+void checkMissileImpactsPlayer(pPlayer player, pMissileList missileList); //This function compares the coordinates of each missile shot from a car with those of the player to identify if there is an impact
+void checkCarsImpactPlayer(pPlayer player, pCarList carList); //This function compares the coordinates of each car with those of the player to identify if there is an impact
+void checkObstaclesImpactPlayer(pPlayer player, pObstacleList obstacleList); //This function compares the coordinate of each obstacle with those of the player to identify if there is an impact
+void checkBonusesImpactPlayer(pPlayer player, pBonusList bonusList); // this function compares the coordinate of each bonus with those of the player to identify if there is an impact
+void checkCarsImpactBonuses(pCarList carList, pBonusList bonusList); // this function compares the coordinates of each bonus with those of each car to identify if there is an impact
+void checkMissilesImpactBonuses(pMissileList missileList, pBonusList bonusList); // this function compares the coordinates of each bonus with those of each missile shot from a car to identify if there is an impact
 
 
 // NOT YET IMPLEMENTED

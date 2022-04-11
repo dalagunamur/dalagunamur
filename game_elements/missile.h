@@ -1,13 +1,10 @@
 #ifndef _MISSILE_H_
 #define _MISSILE_H_
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #include "car.h"
 
 #define MAX_NBR_MISSILE_CARS 15
-#define MAX_NBR_MISSILE_PLAYER 10
 
 // This structure is used to create the missiles, shot from the player or from a car
 struct missile{

@@ -2,7 +2,6 @@
 #define _MAP_H_
 
 #include <stdbool.h>
-#include <string.h>
 
 #define MAP_SIZE_X 60 //number of rows of the map.txt file
 #define MAP_SIZE_Y 39 //number of columns of the map.txt file

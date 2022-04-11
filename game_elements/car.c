@@ -75,7 +75,6 @@ void moveCars(pCarList list){
                 loop->pos_x = x;
                 loop->carActive = false;
             }
-//            printf("Car pos_x= %i, pos_y=%i\n",loop->pos_x,loop->pos_y);
             loop = loop->nextCar;
         }
         free(loop);

@@ -8,11 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 #include <time.h>
 
 #include "map.h"
 #include "../game_elements/obstacle.h"
+#include "../game_elements/bonus.h"
 
 // This function loads the .txt file containing the map into a table. The table will in turn be read each time a new row will be added to the map to be displayed on screen
 bool loadMapFile(int x, int y){
@@ -94,18 +94,18 @@ void displayMap(listMap map){ // prints the whole map on screen
  	}
 }
 
-// This function is called each time the map needs to scroll (via the glutTimerFunc callback). It deletes the last row of the map (appearing at the bottom of the screen) and adds a new random row as first row of the screen, move all created obstacles, then request to redisplay the map on screen
+// This function is called each time the map needs to scroll (via the glutTimerFunc callback). It deletes the last row of the map (appearing at the bottom of the screen) and adds a new random row as first row of the screen, move all created obstacles and bonuses, then request to redisplay the map on screen
 void updateMap(int timer){
     free(mapToRender);
     deleteRow(map);
     listMap row;
     row = createRow();
     map = addRow(map,row);
-//    printf("Row deleted and new one added\n");
     displayMap(map);
+
+    // as the obstacles and the bonuses move at the exact same pace as the map, they are placed in this function too
+    moveBonuses(listOfBonuses);
     moveObstacles(listOfObstacles);
-//    printf("mapToRender populated\n");
     glutPostRedisplay();
     glutTimerFunc(2000, updateMap, 0);
-//    printf("updateMap processing finished\n");
 }
