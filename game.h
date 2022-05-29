@@ -11,6 +11,12 @@
 #include "game_elements/obstacle.h"
 #include "game_elements/bonus.h"
 
+/*
+ INFORMATION ABOUT GLUT TIMERS
+ 0 = handles all the movements of map, obstacles, bonuses, cars and missiles, as well as the check of collision and destruction of inactive elements
+ 1 = handles the creation of new items, ie cars, bonuses, obstacles and missiles shot by cars
+ */
+
 // This structure is used to store the score, the timer and the pointer to the various lists of elements to display during a game
 struct game{
     int timer; // this variable will count the time since the beginning of the game, which will affect the difficulty and the score
@@ -24,12 +30,15 @@ typedef struct game * pGame;
 
 // this global variable will be used to store the information about the game
 pGame theGame;
+bool PAUSED_GAME; // this variable will be used to freeze the game when the pause button is used
+bool GAME_OVER; // this variable will be used to freeze the game when the player has lost all his health points
+int counterTimer0; // this variable will be used as a counter for the glut timer 0, which handles the movements of all elements.
+int counterTimer1; // this variable will be used as a counter for the glut timer 1, which handles the creation of all elements
 
 pGame createGame(void); // initialize a new game or load an existing game
 void handleKeyboard(unsigned char input, int x, int y); // this function is used to capture the key pressed by the player and trigger the ad hoc function in case it is a binded key
 void play(pGame game, char **map, pPlayer p, pCarList carlist, pMissileList missileList, pObstacleList obstacleList, pBonusList bonusList); // this function drives the various sequences of the game
 
-void glutCheckImpacts(int timer); // this function is used to call the various functions checking for impacts between all the elements of the game, and uses the glut callback functionality via glutTimerFunc()
 void checkImpactCars(pCarList carList, pMissileList missileList); //This function scans through all the missiles and the cars and calls the function checkMissileImpactsCar() to identify if there's an impact for each combination
 void checkMissileImpactsCar(pCar car, pMissile missile); //This function compares the coordinates of a missile with those of a car to identify if there is an impact
 void checkMissileImpactsPlayer(pPlayer player, pMissileList missileList); //This function compares the coordinates of each missile shot from a car with those of the player to identify if there is an impact
@@ -38,10 +47,14 @@ void checkObstaclesImpactPlayer(pPlayer player, pObstacleList obstacleList); //T
 void checkBonusesImpactPlayer(pPlayer player, pBonusList bonusList); // this function compares the coordinate of each bonus with those of the player to identify if there is an impact
 void checkCarsImpactBonuses(pCarList carList, pBonusList bonusList); // this function compares the coordinates of each bonus with those of each car to identify if there is an impact
 void checkMissilesImpactBonuses(pMissileList missileList, pBonusList bonusList); // this function compares the coordinates of each bonus with those of each missile shot from a car to identify if there is an impact
+void killGame(void); // this function is used to reset the values of all the elements of the game to zero
 
+
+// CENTRALIZING GLUT TIMERS
+void glutCreateElements(int timer); // this function centralizes the creation of elements in the game, cars, missiles, obstacles and bonuses. It will be assigned the timer nbr 1
+void glutAnimateElements(int timer); // this function centralizes the movements of all elements (except the player), the check for collisions and the destruction of inactive elements. It zill be assigned the timer nbr 0
 
 // NOT YET IMPLEMENTED
-void diplay_pause(void); // when the players pauses the game, allows to save or exit or resume
 void set_scrolling_pace(int timer);
 void save_game(void);
 

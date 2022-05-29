@@ -11,6 +11,7 @@
 
 #include "obstacle.h"
 #include "../map/map.h"
+#include "../game.h"
 
 // This function returns a new obstacle. It is called periodically based on the function glutCreateObstacle()
 pObstacle createObstacle(void){
@@ -54,13 +55,13 @@ void addObstacle(pObstacleList obstacleList, pObstacle newObstacle){
     obstacleList->obstacleCounter ++;
 }
 
-// This function moves all the obstacles by one
+// This function moves all the obstacles by one, but as they move at the same speed as the map, the glutcallback is handled in map.c
 void moveObstacles(pObstacleList list){
     if (list->firstObstacle != NULL ){ // if the list of all obstacles is not empty, move the obstacles. If list of obstacles is empty, do nothing
         pObstacle loop;
         loop = (pObstacle) malloc(sizeof(struct obstacle));
         loop = list->firstObstacle;
-        int x;
+        float x;
         
         while(loop != NULL){ // as long as we did not go through the whole list of obstacles, move the current obstacle down by 1 row
             x = loop->pos_x + 1;
@@ -126,18 +127,3 @@ void destroyObstacles(pObstacleList list){
     }
 }
 
-
-// this function is used to trigger the creation of a new obstacle periodically
-void glutCreateObstacle(int timer){
-    pObstacle newObstacle = createObstacle();
-    addObstacle(listOfObstacles, newObstacle);
-    glutPostRedisplay();
-    glutTimerFunc(20000, glutCreateObstacle, 8);
-}
-
-// This function is used to trigger the destruction of all inactive obstacles periodically
-void glutDestroyObstacles(int timer){
-    destroyObstacles(listOfObstacles);
-    glutPostRedisplay();
-    glutTimerFunc(100, glutDestroyObstacles, 3);
-}

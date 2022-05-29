@@ -3,8 +3,8 @@
 
 // structures created to handle cars and list of cars
 struct car{
-    int pos_x;
-    int pos_y;
+    float pos_x;
+    float pos_y;
 	int healthPoints;
     bool carFrozen; // cars will by default be moving (=false), but can become frozen (=true) if hit by the special attack of the player
     bool carActive; // an inactive car means it must be deleted from the game, as it either reached the botton of the screen or lost all its health points
@@ -33,9 +33,7 @@ void addCar(pCarList list, pCar newCar); // adds a newly created car to the chai
 void destroyCars(pCarList list); // remove all inactive cars from the list of cars to display on screen
 void moveCars(pCarList list); // make all the cars move one row down
 
-void glutCreateCars(int timer); // calls the functions related to the creation of a new car following a given timer, and handles the callback via glutTimerFunc()
-void glutMoveCars(int timer); // calls the functions related to the movement of the cars following a given timer, and handles the callback via glutTimerFunc()
-void glutDestroyCars(int timer); // calls the functions related to the destruction of all inactive cars following a given timer, and handles the callback via glutTimerFunc()
+
 void carHit(pCar car); // this function is called whenever a car is hit by a missile shot from the player. It reduces its health by 1 and if the health drops to 0, the car is deactivated
 
 // NOT IMPLEMENTED YET

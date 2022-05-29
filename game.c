@@ -15,6 +15,14 @@
 
 #include "game.h"
 #include "drawScreen.h"
+#include "menu.h"
+#include "scores.h"
+
+/*
+ INFORMATION ABOUT GLUT TIMERS
+ 0 = handles all the movements of map, obstacles, bonuses, cars and missiles, as well as the check of collision and destruction of inactive elements
+ 1 = handles the creation of new items, ie cars, bonuses, obstacles and missiles shot by cars
+ */
 
 // These variables are assigned to store the action that was requested based on the keystroke, then read to trigger to right function corresponding to the action requested by the player
 bool MOVE_UP = false;
@@ -22,6 +30,14 @@ bool MOVE_DOWN = false;
 bool MOVE_LEFT = false;
 bool MOVE_RIGHT = false;
 bool FIRE_MISSILE = false;
+bool GO_TO_MAIN = false;
+
+// THis variable will be used to indicate that the game is paused or is over and that no movements are allowed.
+bool PAUSED_GAME = false;
+bool GAME_OVER = false;
+
+// this array contains the ids of all the textures used in the application
+extern GLuint textures[25];
 
 pGame createGame(void){
     pGame game;
@@ -32,6 +48,10 @@ pGame createGame(void){
     game->difficulty = 0;
     game->verticalScrolling = true; // by default, will be set to True meaning the screen will scroll vertically. In a future version, if set to false, the screen will scroll horizontally, from the right to the left
     
+    // intializing both counterTimers that will be used by the glut call back functions.
+    counterTimer0 = 0;
+    counterTimer1 = 0;
+    
     return game;
 }
 
@@ -40,22 +60,34 @@ void handleKeyboard(unsigned char input, int x, int y){
     switch(input)
         {
             case 'z':
-                MOVE_UP = true;
+                if(PAUSED_GAME == false && GAME_OVER == false) MOVE_UP = true;
                 break;
             case 's':
-                MOVE_DOWN = true;
+                if(PAUSED_GAME == false && GAME_OVER == false) MOVE_DOWN = true;
                 break;
             case 'q':
-                MOVE_LEFT = true;
+                if(PAUSED_GAME == false && GAME_OVER == false) MOVE_LEFT = true;
                 break;
             case 'd':
-                MOVE_RIGHT = true;
+                if(PAUSED_GAME == false && GAME_OVER == false) MOVE_RIGHT = true;
                 break;
             case 32: // when hitting the space bar
-                FIRE_MISSILE = true;
+                if(PAUSED_GAME == false && GAME_OVER == false) FIRE_MISSILE = true;
                 break;
-            case 27: // when hitting the ESCAPE key
-                exit(0);
+            case 'p': // Pauses the game if it was running, unpause the game otherwise
+                if(PAUSED_GAME == false && GAME_OVER == false){
+                    PAUSED_GAME = true;
+                }
+                else if(PAUSED_GAME == true && GAME_OVER == false){
+                    PAUSED_GAME = false;
+                }
+                break;
+            case 27: // when hitting the ESCAPE key, when in pause mode or game over mode, allows to leave the game
+                if(PAUSED_GAME == true || GAME_OVER == true) exit(0);
+                break;
+            case 'h':
+                if(PAUSED_GAME == true || GAME_OVER == true) GO_TO_MAIN = true;
+                break;
         }
 }
 
@@ -63,11 +95,16 @@ void handleKeyboard(unsigned char input, int x, int y){
 // It also call the function to capture the key pressed by the player on the keyboard and handles the movements of the player.
 void play(pGame game, char **map, pPlayer p, pCarList carList, pMissileList missileList, pObstacleList obstacleList, pBonusList bonusList){
     drawMap();  //display the map on screen
+    drawBlankSpaceForScore(); // display a green empty square to serve as background for the score and max number of missiles
     drawObstacles(obstacleList); // display all the obstacles on the screen
     drawBonuses(bonusList); // display all the bonuses on the screen
     drawCars(carList); //display all the ennemies
     drawPlayer(p); //display the player
     drawMissiles(missileList); //display all the missiles
+    drawHealth(p); // display the current level of health
+    drawScore(game); // display the current score and the maximum number of missiles the player can currently shoot
+    if(PAUSED_GAME) displayPause(); // if the game is paused, display the paused menu. Else do nothing.
+    if(GAME_OVER) displayGameOver(game); // if the game is over, display the game over screen. Else do nothing.
     
     glutKeyboardFunc(handleKeyboard);        //callback to the function handling the keyboard
     
@@ -94,9 +131,17 @@ void play(pGame game, char **map, pPlayer p, pCarList carList, pMissileList miss
         }
         FIRE_MISSILE = false;
     }
-    
-    game->timer++;
-    game->score++;
+    if (GO_TO_MAIN){
+        GO_TO_MAIN = false;
+        glutHideWindow(); // hides the current window, ie the game page
+        glDeleteTextures(25, textures); // textures are linked to the window, need to delete them and reload in the next window
+        display_home(); // calls the function to display the home page
+        
+    }
+    if(PAUSED_GAME == false && GAME_OVER == false){ // increase the score and the timer only when the game is not paused and not game over
+        game->timer++;
+        if( game->timer % 100 ==0) game->score++; // increase the score each time the timer increases by 100
+    }
 
     glutPostRedisplay();
 }
@@ -135,13 +180,13 @@ void checkMissileImpactsCar(pCar car, pMissile missile){
     bool impactY = false;
     
     // TODO - base computation on size of squares rather than hard figures
-    // we must take into account that the square size of a car is twice as much as the one of a missile + that a car has in total the length of 8 missiles
-    if( (missile->pos_x >= x*2) && (missile->pos_x <= (x*2)+7) ){
+    // we must take into account that the square size of a car is twice as much as the one of a missile + that a car has in total the length of 12 missiles
+    if( (missile->pos_x >= x*2) && (missile->pos_x <= (x*2)+11) ){
         impactX = true;
     }
     
-    // we must take into account that the square size of a car is twice as much as the one of a missile + that a car has in total the width of 4 missiles
-    if( (missile->pos_y >= y*2) && (missile->pos_y <= (y*2)+3) ){
+    // we must take into account that the square size of a car is twice as much as the one of a missile + that a car has in total the width of 6 missiles
+    if( (missile->pos_y >= y*2) && (missile->pos_y <= (y*2)+5) ){
         impactY = true;
     }
     
@@ -149,22 +194,8 @@ void checkMissileImpactsCar(pCar car, pMissile missile){
     if(impactX && impactY){
         missile->missileActive = false;
         carHit(car);
-        theGame->score++;
+        theGame->score += 2; // hitting a car increases the score by 2 points
     }
-}
-
-// this function checks for all the potential impacts between elements of the game
-void glutCheckImpacts(int timer){
-    checkImpactCars(listOfCars, listOfMissiles); // checks if missiles shot by the player hit a car
-    checkMissileImpactsPlayer(p, listOfMissiles); // checks if missiles shot by cars hit the player
-    checkCarsImpactPlayer(p,listOfCars); // checks if cars hit the player
-    checkObstaclesImpactPlayer(p, listOfObstacles); // checks if the player hits an obstacle
-    checkBonusesImpactPlayer(p, listOfBonuses); // checks if the player collects a bonus
-    checkCarsImpactBonuses(listOfCars, listOfBonuses); // checks if cars hit a bonus
-    checkMissilesImpactBonuses(listOfMissiles, listOfBonuses); // check if missiles shot from the cars hit a bonus
-    
-    glutPostRedisplay();
-    glutTimerFunc(10, glutCheckImpacts, 7);
 }
 
 // this function scans through all the missiles in game that were shot from a car and compares their position to the one of the player
@@ -182,12 +213,12 @@ void checkMissileImpactsPlayer(pPlayer player, pMissileList missileList){
     
         while(loopMissile != NULL){
             if(loopMissile->missileFromPlayer==false){ // if the missile has been shot by a car, check the coordinates of the missile vs the ones of the player, else do nothing
-                // the size of the player on the screen is twice that of a missile, this impacts the check on the coordindates
-                if( (loopMissile->pos_x >= x*2) && (loopMissile->pos_x <= (x*2)+1) ){
+                // the vertical size of the player on the screen is 4 times that of a missile, this impacts the check on the coordinates
+                if( (loopMissile->pos_x >= x*2) && (loopMissile->pos_x <= (x*2)+3) ){
                     impactX = true;
                 }
                 
-                // the size of the player on the screen is twice that of a missile, this impacts the check on the coordindates
+                // the size of the player on the screen is twice that of a missile, this impacts the check on the coordinates
                 if( (loopMissile->pos_y >= y*2) && (loopMissile->pos_y <= (y*2)+1) ){
                     impactY = true;
                 }
@@ -222,13 +253,13 @@ void checkCarsImpactPlayer(pPlayer player, pCarList carList){
         bool impactY = false;
         
         while(loopCar != NULL){
-            // the car is 4 times as long as the player
-            if( (loopCar->pos_x >= x-3) && (loopCar->pos_x <= x) ){
+            // the car is 3 times as long as the player (car length=6, player length = 2)
+            if( (loopCar->pos_x >= x-5) && (loopCar->pos_x <= x +1) ){
                 impactX = true;
             }
             
-            // the car is twice as wide as the player
-            if( (loopCar->pos_y >= y-1) && (loopCar->pos_y <= y) ){
+            // the car is 3 times as wide as the player
+            if( (loopCar->pos_y >= y-2) && (loopCar->pos_y <= y) ){
                 impactY = true;
             }
             
@@ -236,6 +267,7 @@ void checkCarsImpactPlayer(pPlayer player, pCarList carList){
             if(impactX && impactY){
                 loopCar->carActive = false;
                 player_loose_health(player);
+                theGame->score -= 1; // being driven over by a car reduces the score by 1 point
             }
             
             // resetting the values for the next car
@@ -263,8 +295,8 @@ void checkObstaclesImpactPlayer(pPlayer player, pObstacleList obstacleList){
         while(loop != NULL){
             x = player->pos_x;
             y = player->pos_y;
-            // the obstacle is twice as long as the player
-            if( (loop->pos_x >= x-1) && (loop->pos_x <= x) ){
+            // the obstacle is as long as the player
+            if( (loop->pos_x >= x-1) && (loop->pos_x <= x +1) ){
                 impactX = true;
             }
             
@@ -276,6 +308,7 @@ void checkObstaclesImpactPlayer(pPlayer player, pObstacleList obstacleList){
             // if both x and y coordinates indicate an impact, the function player_loose_health() is called to reduce the health points of the player. The obstacle is NOT deactivated and the player is pushed aside
             if(impactX && impactY){
                 player_loose_health(player);
+                theGame->score -= 2; // driving over an obstacle reduces the score by 2 points
                 
                 if(player->pos_y > (WINDOW_SIZE_Y - 12) ){ //if the player is too close to the right border of the screen, it will be moved by the obstacle on the left
                     player->pos_y = loop->pos_y-1;
@@ -309,8 +342,8 @@ void checkBonusesImpactPlayer(pPlayer player, pBonusList bonusList){
         bool impactY = false;
         
         while(loop != NULL){
-            // the bonus has the same length as the player
-            if(loop->pos_x == x){
+            // the player is twice has long as a bonus
+            if( (x >= loop->pos_x-1) && (x <= loop->pos_x) ){
                 impactX = true;
             }
             
@@ -323,6 +356,7 @@ void checkBonusesImpactPlayer(pPlayer player, pBonusList bonusList){
             if(impactX && impactY){
                 loop->bonusActive = false;
                 apply_bonus(player, loop);
+                theGame->score += 5; // driving over a bonus increases the score by 5 points
             }
             
             // resetting the values for the next car
@@ -353,13 +387,13 @@ void checkCarsImpactBonuses(pCarList carList, pBonusList bonusList){
         while(loopCar != NULL){ // as long as we did not go through the whole list of cars, check for impacts on bonuses
             loopBonus = bonusList->firstBonus;
             while(loopBonus != NULL){
-                // the car is 4 times as long as the bonus
-                if( (loopCar->pos_x >= loopBonus->pos_x-3) && (loopCar->pos_x <= loopBonus->pos_x) ){
+                // the car is 6 times as long as the bonus
+                if( (loopCar->pos_x >= loopBonus->pos_x-5) && (loopCar->pos_x <= loopBonus->pos_x) ){
                     impactX = true;
                 }
                 
-                // the car is twice as wide as the bonus
-                if( (loopCar->pos_y >= loopBonus->pos_y-1) && (loopCar->pos_y <= loopBonus->pos_y) ){
+                // the car is 3 times as wide as the bonus
+                if( (loopCar->pos_y >= loopBonus->pos_y-2) && (loopCar->pos_y <= loopBonus->pos_y) ){
                     impactY = true;
                 }
                 
@@ -368,7 +402,6 @@ void checkCarsImpactBonuses(pCarList carList, pBonusList bonusList){
                     loopBonus->bonusActive = false;
                     loopCar->healthPoints++;
                     createMissileFromCar(loopCar);
-                    printf("The car used the bonus!\n");
                 }
                 //move to the next bonus and reset the impactX and impactY to false
                 loopBonus = loopBonus->nextBonus;
@@ -414,7 +447,6 @@ void checkMissilesImpactBonuses(pMissileList missileList, pBonusList bonusList){
                     // in case of impact, the bonus is destroyed
                     if(impactX && impactY){
                         loopBonus->bonusActive = false;
-                        printf("The missile destroyed the bonus!\n");
                     }
                     //move to the next bonus and reset the impactX and impactY to false
                     loopBonus = loopBonus->nextBonus;
@@ -427,4 +459,114 @@ void checkMissilesImpactBonuses(pMissileList missileList, pBonusList bonusList){
         free(loopMissile);
         free(loopBonus);
     }
+}
+
+// this function centralizes the creation of elements in the game, cars, missiles, obstacles and bonuses. It will be assigned the timer nbr 1
+void glutCreateElements(int timer){
+    // only perform these checks if the game is NOT paused and NOT game over
+    if(!PAUSED_GAME && !GAME_OVER){
+      
+        // every run of the glutCreateElements function, create a new missile (if there are cars already)
+        if(listOfCars->carCounter > 0){
+            // identify randomly one car that will shoot the missile
+            int i = rand() % listOfCars->carCounter;
+            int j = 0;
+            pCar loop;
+            loop = (pCar) malloc(sizeof(struct car));
+            loop = listOfCars->firstCar;
+        
+            while(j != i){
+                loop = loop->nextCar;
+                j++;
+            }
+            // create a new missile and shoot it from the identified car
+            pMissile newMissile = createMissileFromCar(loop);
+            addMissile(listOfMissiles, newMissile);
+        }
+        
+        // every 2 runs of the glutCreateElements function, create a new car
+        if(counterTimer1 %  2 == 0){
+            pCar newCar = createCar();
+            addCar(listOfCars, newCar);
+        }
+            
+        // once every 4 runs of the glutCreateElements function, create a new obstacle
+        if(counterTimer1 %  4 == 0){
+            pObstacle newObstacle = createObstacle();
+            addObstacle(listOfObstacles, newObstacle);
+        }
+        
+        
+        // once every 6 runs of the glutCreateElements function, create a new obstacle
+        if(counterTimer1 %  6 == 0){
+            pBonus newBonus = createBonus();
+            addBonus(listOfBonuses, newBonus);
+        }
+    
+    }
+    
+    counterTimer1 ++;
+    glutPostRedisplay();
+    glutTimerFunc(90000/SCREEN_FPS, glutCreateElements, 1); // runs every 4 seconds
+}
+
+
+
+// this function centralizes the movements of all elements (except the player), the check for collisions and the destruction of inactive elements
+void glutAnimateElements(int timer){
+    // only perform these checks if the game is NOT paused and NOT game over
+    if(!PAUSED_GAME && !GAME_OVER){
+        // every run of the glutAnimateElements function, check for impacts and destroy any inactive car, bonus, missile or obstacle
+        checkImpactCars(listOfCars, listOfMissiles); // checks if missiles shot by the player hit a car
+        checkMissileImpactsPlayer(p, listOfMissiles); // checks if missiles shot by cars hit the player
+        checkCarsImpactPlayer(p,listOfCars); // checks if cars hit the player
+        checkObstaclesImpactPlayer(p, listOfObstacles); // checks if the player hits an obstacle
+        checkBonusesImpactPlayer(p, listOfBonuses); // checks if the player collects a bonus
+        checkCarsImpactBonuses(listOfCars, listOfBonuses); // checks if cars hit a bonus
+        checkMissilesImpactBonuses(listOfMissiles, listOfBonuses); // check if missiles shot from the cars hit a bonus
+        
+        destroyBonuses(listOfBonuses);
+        destroyCars(listOfCars);
+        destroyMissiles(listOfMissiles);
+        destroyObstacles(listOfObstacles);
+
+        // once every 12 runs of the glutAnimateElements function, move the maps and the obstacles
+        if(counterTimer0 %  10 == 0){
+            free(mapToRender);
+            deleteRow(map);
+            listMap row;
+            row = createRow();
+            map = addRow(map,row);
+            displayMap(map);
+            moveBonuses(listOfBonuses);
+            moveObstacles(listOfObstacles);
+        }
+        
+        // once every 2 runs of the glutAnimateElements function, move the cars
+        if(counterTimer0 %  2 == 0){
+            moveCars(listOfCars);
+        }
+        
+        // once every 1 runs of the glutAnimateElements function, move the missiles
+        if(counterTimer0 %  1 == 0){
+            moveMissiles(listOfMissiles);
+        }
+
+    }
+    
+    counterTimer0 ++;
+    glutPostRedisplay();
+    glutTimerFunc(1020/SCREEN_FPS, glutAnimateElements, 0);
+}
+
+// this function is used to reset all the elements of the game to their initial value
+void killGame(void){
+    free(mapToRender);
+    free(p);
+    free(listOfCars);
+    free(listOfMissiles);
+    free(listOfObstacles);
+    free(listOfBonuses);
+    free(theGame);
+    maxNbrMissilesPlayer = 10; // initially
 }

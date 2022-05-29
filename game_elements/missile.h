@@ -8,8 +8,8 @@
 
 // This structure is used to create the missiles, shot from the player or from a car
 struct missile{
-    int pos_x;
-    int pos_y;
+    float pos_x;
+    float pos_y;
     int speed;
     bool missileFromPlayer;
     bool missileActive;
@@ -40,8 +40,6 @@ void addMissile(pMissileList list, pMissile newMissile); // adds a newly created
 void moveMissiles(pMissileList list); // make all missiles move by one position
 void destroyMissiles(pMissileList list); // remove all inactive missiles. Missiles can become inactive if they leave the map or if they hit
 
-void glutMoveMissiles(int timer); // this function is used to move all the missiles periodically, based on a timer and handles the callback via glutTimerFunc()
-void glutDestroyMissiles(int timer); // this function is used to remove from the game all the inactive missiles and handles the callback via glutTimerFunc()
-void glutCreateMissileFromCar(int timer); // this function is used to create a new missile shot from a randomly selected car periodically, based on a timer and handles the callback via glutTimerFunc()
+
 
 #endif

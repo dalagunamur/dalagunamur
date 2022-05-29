@@ -13,6 +13,7 @@
 
 #include "car.h"
 #include "../map/map.h"
+#include "../game.h"
 
 // This function returns a new car, placing it on the first row of the screen, at a random position on the road
 pCar createCar(void){
@@ -20,7 +21,7 @@ pCar createCar(void){
     car = (pCar) malloc (sizeof(struct car));
     
     car->pos_x = 1;
-    car->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 7; // cars must appear on the first row and on the road, not on the grass
+    car->pos_y = ( rand() % (WINDOW_SIZE_Y - 16) ) + 7; // cars must appear on the first row and on the road, not on the grass
     car->healthPoints = (rand() %2) + 1; // cars have either 1 or 2 health points
     car->carFrozen = false; // by default a car is moving
     car->carActive = true;
@@ -63,10 +64,10 @@ void moveCars(pCarList list){
         pCar loop;
         loop = (pCar) malloc(sizeof(struct car));
         loop = list->firstCar;
-        int x;
+        float x;
         
         while(loop != NULL){ // as long as we did not go through the whole list of cars, move the current car down by 1 row
-            x = loop->pos_x + 1;
+            x = loop->pos_x + 0.4;
                  
             if ((x < (WINDOW_SIZE_X - 1)) ){
                 loop->pos_x = x;
@@ -118,6 +119,7 @@ void destroyCars(pCarList list){
                 }
             
                 // the car to delete can be removed from memory + the counter of all ennemies can be reduced by 1
+                theGame->score += 5; // destroying the car grants a 5 points bonus to the score
                 free(carToDelete);
                 list->carCounter --;
             }
@@ -129,27 +131,7 @@ void destroyCars(pCarList list){
     }
 }
 
-// this function is used to trigger the creation of a new car periodically
-void glutCreateCars(int timer){
-    pCar newCar = createCar();
-    addCar(listOfCars, newCar);
-    glutPostRedisplay();
-    glutTimerFunc(4000, glutCreateCars, 1);
-}
 
-// this function is used to trigger the movement of existing cars periodically + flagging them as inactive if they reach the bottom of the screen
-void glutMoveCars(int timer){
-    moveCars(listOfCars);
-    glutPostRedisplay();
-    glutTimerFunc(500, glutMoveCars, 2);
-}
-
-// this function is used to trigger the removal of inactive cars periodically
-void glutDestroyCars(int timer){
-    destroyCars(listOfCars);
-    glutPostRedisplay();
-    glutTimerFunc(100, glutDestroyCars, 3);
-}
 
 // This function is used to reduce the health points count of a car. If the HP drop to 0, the car is deactivated
 void carHit(pCar car){

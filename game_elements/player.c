@@ -13,13 +13,14 @@
 #include "player.h"
 #include "../map/map.h"
 #include "../game.h"
+#include "../scores.h"
 #include "bonus.h"
 
 // this function returns the player, initializing its position on the map
 pPlayer createPlayer(){
     pPlayer p;
     p = (pPlayer) malloc (sizeof(struct player));
-    p->pos_x = 38;
+    p->pos_x = 37;
     p->pos_y = 30;
     p->health_points = 3;
     p->alt_weapon_available = true;
@@ -29,7 +30,7 @@ pPlayer createPlayer(){
 
 // this function moves the player up by one row, unless he's trying to access one of the top ten rows
 void move_player_up(char **map){
-    int x = 0;
+    float x = 0;
     
     x = p->pos_x - 1;
             
@@ -40,11 +41,11 @@ void move_player_up(char **map){
 
 //this function moves the player down by one row, unless he's trying to access the last row
 void move_player_down(char **map){
-    int x = 0;
+    float x = 0;
     
     x = p->pos_x + 1;
          
-    if (x < (WINDOW_SIZE_X -1) ){ //(*(*(map + x) + y)!='#') &&
+    if (x < (WINDOW_SIZE_X -2) ){ //(*(*(map + x) + y)!='#') &&
         p->pos_x = x;
     }
 }
@@ -75,13 +76,12 @@ void move_player_right(char **map){
 // This function is used to reduce the health points count of the player. If the HP drop to 0, the player has lost and the game ends
 void player_loose_health(pPlayer player){
     player->health_points --;
-    printf("\n!! PLAYER HAS BEEN HIT !! - %i HP remaining\n",player->health_points);
+//    printf("\n!! PLAYER HAS BEEN HIT !! - %i HP remaining\n",player->health_points);
     
     if (player->health_points <= 0){
-        printf("\nGAME OVER\n");
-        printf("Final time: %i\n",theGame->timer);
-        printf("Final score: %i\n",theGame->score);
-        exit(0);
+        GAME_OVER = true;
+        checkIfHighScore(listOfHighScores, theGame->score, theGame->timer);
+        saveHighScores(listOfHighScores);
     }
 }
 
@@ -91,16 +91,16 @@ void apply_bonus(pPlayer player, pBonus bonus){
     if(bonus->typeHealth == true){
         if(player->health_points < 3){
             player->health_points ++;
-            printf("Bonus heals 1 HP - %i HP remaining\n",player->health_points);
+//            printf("Bonus heals 1 HP - %i HP remaining\n",player->health_points);
         }
         else{
-            printf("Max HP already - %i HP remaining\n",player->health_points);
+//            printf("Max HP already - %i HP remaining\n",player->health_points);
         }
     }
     
     // if the bonus has the type missile, it increases the max number of missiles that can be shot
     if(bonus->typeMissile == true){
         maxNbrMissilesPlayer = maxNbrMissilesPlayer +2;
-        printf("Bonus grants new missiles - Max nbr now %i\n",maxNbrMissilesPlayer);
+//        printf("Bonus grants new missiles - Max nbr now %i\n",maxNbrMissilesPlayer);
     }
 }

@@ -8,8 +8,8 @@
 
 // this structure is used to capture the key attributes of the player
 struct player{
-    int pos_x;
-    int pos_y;
+    float pos_x;
+    float pos_y;
     int health_points;
     bool alt_weapon_available; // the usage of the secondary weapon will only be possible after a defined cooldown
 };

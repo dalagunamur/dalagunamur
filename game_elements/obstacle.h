@@ -4,8 +4,8 @@
 #include <stdbool.h>
 
 struct obstacle{
-    int pos_x;
-    int pos_y;
+    float pos_x;
+    float pos_y;
     bool obstacleActive; // true if the obstacle has to be displayed on the screen. Becomes false if the obstacle leaves the screen. Inactive obstacles are removed from the list
     struct obstacle * previousObstacle;
     struct obstacle * nextObstacle;
@@ -31,7 +31,6 @@ void addObstacle(pObstacleList obstacleList, pObstacle newObstacle); // this fun
 void moveObstacles(pObstacleList list); // this function moves all the obstacles created in the game and flags them as inactive when scrolling out of the map. The obstacle actually do not move, they simply follow the scrolling of the map.
 void destroyObstacles(pObstacleList list); // this function removes from the game all obstacles that have become inactive
 
-void glutCreateObstacle(int timer); // this function is called periodically to create a new obstacle
-void glutDestroyObstacles(int timer); // this function is used to remove from the game all the inactive obstacles and handles the callback via glutTimerFunc()
+
 
 #endif

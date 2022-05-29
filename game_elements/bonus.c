@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <time.h>
 
+#include "../game.h"
 #include "bonus.h"
 #include "../map/map.h"
 
@@ -117,13 +118,13 @@ void destroyBonuses(pBonusList list){
     }
 }
 
-// This function makes all active bonuses move. The bonuses move at the same pace as the map and the obstacles
+// This function makes all active bonuses move. The bonuses move at the same pace as the map and the obstacles, hence the callback is handled via map.c
 void moveBonuses(pBonusList list){
     if (list->firstBonus != NULL ){ // if the list of all bonuses is not empty, move the bonuses. If list of bonuses is empty, do nothing
         pBonus loop;
         loop = (pBonus) malloc(sizeof(struct bonus));
         loop = list->firstBonus;
-        int x;
+        float x;
         
         while(loop != NULL){ // as long as we did not go through the whole list of bonuses, move the current bonus down by 1 row
             x = loop->pos_x + 1;
@@ -141,17 +142,3 @@ void moveBonuses(pBonusList list){
     }
 }
 
-// This function periodically calls the function to create a new Bonus
-void glutCreateBonus(int timer){
-    pBonus newBonus = createBonus();
-    addBonus(listOfBonuses, newBonus);
-    glutPostRedisplay();
-    glutTimerFunc(20000, glutCreateBonus, 8);
-}
-
-// This function periodically calls the function to remove deactivated bonuses
-void glutDestroyBonuses(int timer){
-    destroyBonuses(listOfBonuses);
-    glutPostRedisplay();
-    glutTimerFunc(100, glutDestroyBonuses, 3);
-}

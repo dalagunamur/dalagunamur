@@ -11,11 +11,15 @@
 #include <time.h>
 
 #include "map.h"
+#include "../game.h"
 #include "../game_elements/obstacle.h"
 #include "../game_elements/bonus.h"
+#include "../game_elements/missile.h"
+#include "../game_elements/car.h"
+
 
 // This function loads the .txt file containing the map into a table. The table will in turn be read each time a new row will be added to the map to be displayed on screen
-bool loadMapFile(int x, int y){
+bool loadMapFile(float x, float y){
 	fullMap = malloc(sizeof(char *) * x);
     FILE *f = NULL;
     f = fopen("map/map.txt", "r");
@@ -61,7 +65,7 @@ listMap createRow(void){
 	return row;
 }
 
-// This function adds newRow as new head of the chained list and returns the new head opf the list
+// This function adds newRow as new head of the chained list and returns the new head of the list
 listMap addRow(listMap map, listMap newRow){
  	(*newRow).nextRow = map;
  	return newRow;
@@ -94,18 +98,3 @@ void displayMap(listMap map){ // prints the whole map on screen
  	}
 }
 
-// This function is called each time the map needs to scroll (via the glutTimerFunc callback). It deletes the last row of the map (appearing at the bottom of the screen) and adds a new random row as first row of the screen, move all created obstacles and bonuses, then request to redisplay the map on screen
-void updateMap(int timer){
-    free(mapToRender);
-    deleteRow(map);
-    listMap row;
-    row = createRow();
-    map = addRow(map,row);
-    displayMap(map);
-
-    // as the obstacles and the bonuses move at the exact same pace as the map, they are placed in this function too
-    moveBonuses(listOfBonuses);
-    moveObstacles(listOfObstacles);
-    glutPostRedisplay();
-    glutTimerFunc(2000, updateMap, 0);
-}

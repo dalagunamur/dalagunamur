@@ -1,4 +1,4 @@
-# dalagunamur
+# 2122_IHDCB132_David_LAGUESSE
 
 0- About
 Author: David Laguesse - david.laguesse@student.unamur.be
@@ -8,18 +8,21 @@ The player drives a bycycle and has to avoid being driven over by cars. The play
 
 
 1- Features that have already been implemented
-* Launching the application opens a window that displays the various elements of the game:
+* Launching the application opens a main window with the menu:
+    - The player can launch the game, view the high scores or some information about the game (key bindings); The load game is not yet supported.
+
+* When playing:
     - The road appears on the center in light grey.
-    - On the side of the road the light green represents the grass, while the red squares represent houses and dark green squares represent trees
-    - The player is represented as a light blue square 
-    - The cars are represented as large purple rectangles
-    - The obstacles are represented as large dark grey squares
-    - The missiles (from the player or from the cars) are represented as small black squares
-    - The bonuses are represented as pink squares
+    - On the side of the road the light green represents the grass, with flowers
+    - The player plays the bike that starts on the bottom right corner of the game window
+    - The cars are coming from the top of the window
+    - The potholes and bonuses (are gift boxes) appear on the map
+    - The missiles from the cars are represented as small black squares
+    - The missiles from the player are represented as small red squares
 
 * The scrolling of the map is done via the load of a new randomly selected row of the map, that is displayed on top while the bottom one is removed. Obstacles and bonuses move at the same pace as the map, cars move faster and missiles are the fastest.
 
-* Moving the player is done via the keyboard. The following key biding is hardcoded: "z" for UP, "q" for LEFT, "s" for DOWN and "d" for RIGHT. Pressing the space bar fires a missile (initially there is max. 10 missiles from the player at a time on screen)
+* Moving the player is done via the keyboard. The following key biding is hardcoded: "z" for UP, "q" for LEFT, "s" for DOWN and "d" for RIGHT. Pressing the space bar fires a missile (initially there is max. 10 missiles from the player at a time on screen, which can be increased by collecting bonuses)
 
 * Cars fire missiles targeting the player, with a random car selected to fire
 
@@ -30,16 +33,9 @@ The player drives a bycycle and has to avoid being driven over by cars. The play
 
 
 2- Features that still need to be implemented
-* Additional screens for the menu, for the "Load a saved game", for the "High scores", for the "Configuration and rules"
 
-* Functionality to offer the player to choose between vertical and horizontal scrolling
+* Functionality to offer the player to choose between vertical and horizontal scrolling and modify the key bindings
 
-* Textures will be applied to the various elements appearing on screen
+* Functionality to allow to save the game and reload at a later time
 
-* Functionality to allow to pause the game and save the current game to reload at a later time
-
-* Improved strategy for the cars to try to hit the player (currently driving in a straight line) + strategy to select which car will fire the missile might change (for example, selecting the car which is closest to the player to fire) + based on the computed difficulty level of the current game, the cars might have more than 1-2 health points
-
-* Better integration of the timer and the score, which will have a direct impact on the difficulty level of the game
-
-* Improved collision system, the computation to decide if there's an impact should be based on the constants about square sizes and not hardcoded values
+* Increased difficulty as the game progresses + "smarter" cars when the game progresses
