@@ -15,28 +15,58 @@
 #include "../map/map.h"
 
 // This function returns a newly created bonus
-pBonus createBonus(void){
+pBonus createBonus(int loadedBonus, float x, float y, int active, int health, int missile){
     pBonus newBonus;
     newBonus = (pBonus) malloc(sizeof(struct bonus));
     
-    newBonus->pos_x = (rand() % 10) + 10; // the bonus appears in the rows 10 to 20
-    newBonus->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 7;
-    newBonus->bonusActive = true;
-    newBonus->previousBonus = NULL;
-    newBonus->nextBonus = NULL;
-    
-    int typeBonus = rand() %3; // bonuses can be of type health only, missile only or both health and missile
-    if(typeBonus == 0){
-        newBonus->typeHealth = true;
-        newBonus->typeMissile = false;
+    if(loadedBonus == 0){ // when loadedBonus is 0, it means we create a new bonus in game
+        newBonus->pos_x = (rand() % 10) + 10; // the bonus appears in the rows 10 to 20
+        newBonus->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 7;
+        newBonus->bonusActive = true;
+        newBonus->previousBonus = NULL;
+        newBonus->nextBonus = NULL;
+        
+        int typeBonus = rand() %3; // bonuses can be of type health only, missile only or both health and missile
+        if(typeBonus == 0){
+            newBonus->typeHealth = true;
+            newBonus->typeMissile = false;
+        }
+        else if(typeBonus == 1){
+            newBonus->typeHealth = false;
+            newBonus->typeMissile = true;
+        }
+        else{
+            newBonus->typeHealth = true;
+            newBonus->typeMissile = true;
+        }
     }
-    else if(typeBonus == 1){
-        newBonus->typeHealth = false;
-        newBonus->typeMissile = true;
-    }
-    else{
-        newBonus->typeHealth = true;
-        newBonus->typeMissile = true;
+    else{ // else it means loadedBonus is 1 and we create a bonus from a saved game, using the other arguments
+        newBonus->pos_x = x;
+        newBonus->pos_y = y;
+        
+        if(active == 1){
+            newBonus->bonusActive = true;
+        }
+        else{
+            newBonus->bonusActive = false;
+        }
+        
+        if(health == 1){
+            newBonus->typeHealth = true;
+        }
+        else{
+            newBonus->typeHealth = false;
+        }
+        
+        if(missile == 1){
+            newBonus->typeMissile = true;
+        }
+        else{
+            newBonus->typeMissile = false;
+        }
+        
+        newBonus->previousBonus = NULL;
+        newBonus->nextBonus = NULL;
     }
     
     return newBonus;
@@ -142,3 +172,19 @@ void moveBonuses(pBonusList list){
     }
 }
 
+// this function sets all active bonuses as inactive. It is called along with the destroyBonuses() function when killing a game.
+void setInactiveAllBonuses(pBonusList list){
+    if (list->firstBonus != NULL ){ // if the list of all bonuses is not empty, check if some bonuses have to be set to inactive. If list of bonuses is empty, do nothing
+        pBonus loop; // creating a temporary bonus to navigate through the list of bonuses
+        loop = (pBonus) malloc(sizeof(struct bonus));
+        loop = list->firstBonus;
+        
+        while(loop != NULL){ // as long as we did not go through the whole list of bonuses, execute the following code
+            if(loop->bonusActive == true){ // if the current bonus is , then it must be set to inactive
+                loop->bonusActive = false;
+            }
+            loop = loop->nextBonus;
+        }
+        free(loop);
+    }
+}

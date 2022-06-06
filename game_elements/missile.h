@@ -39,7 +39,7 @@ pMissile createMissileFromCar(pCar car); // to create a new instance of a missil
 void addMissile(pMissileList list, pMissile newMissile); // adds a newly created missile to the list of all missiles, as new head
 void moveMissiles(pMissileList list); // make all missiles move by one position
 void destroyMissiles(pMissileList list); // remove all inactive missiles. Missiles can become inactive if they leave the map or if they hit
-
+void setInactiveAllMissiles(pMissileList list); // this function sets all active missiles as inactive. It is called along with the destroyMissiles() function when killing a game.
 
 
 #endif

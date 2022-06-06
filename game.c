@@ -39,12 +39,14 @@ bool GAME_OVER = false;
 // this array contains the ids of all the textures used in the application
 extern GLuint textures[25];
 
-pGame createGame(void){
+// This function creates the game. This structure is used to store the current score and the timer.
+// TO BE DONE STILL - storing the difficulty level and the scrolling type
+pGame createGame(int score, int timer){
     pGame game;
     game = (pGame) malloc (sizeof(struct game));
-
-    game->timer = 0;
-    game->score = 0;
+    
+    game->timer = timer;
+    game->score = score;
     game->difficulty = 0;
     game->verticalScrolling = true; // by default, will be set to True meaning the screen will scroll vertically. In a future version, if set to false, the screen will scroll horizontally, from the right to the left
     
@@ -85,7 +87,7 @@ void handleKeyboard(unsigned char input, int x, int y){
             case 27: // when hitting the ESCAPE key, when in pause mode or game over mode, allows to leave the game
                 if(PAUSED_GAME == true || GAME_OVER == true) exit(0);
                 break;
-            case 'h':
+            case 'h': // when hitting H when the game is in pause mode or game over mode, allows to return to the home page
                 if(PAUSED_GAME == true || GAME_OVER == true) GO_TO_MAIN = true;
                 break;
         }
@@ -103,7 +105,9 @@ void play(pGame game, char **map, pPlayer p, pCarList carList, pMissileList miss
     drawMissiles(missileList); //display all the missiles
     drawHealth(p); // display the current level of health
     drawScore(game); // display the current score and the maximum number of missiles the player can currently shoot
-    if(PAUSED_GAME) displayPause(); // if the game is paused, display the paused menu. Else do nothing.
+    if(PAUSED_GAME){
+        displayPause(); // if the game is paused, display the paused menu. Else do nothing.
+    }
     if(GAME_OVER) displayGameOver(game); // if the game is over, display the game over screen. Else do nothing.
     
     glutKeyboardFunc(handleKeyboard);        //callback to the function handling the keyboard
@@ -133,6 +137,9 @@ void play(pGame game, char **map, pPlayer p, pCarList carList, pMissileList miss
     }
     if (GO_TO_MAIN){
         GO_TO_MAIN = false;
+        PAUSED_GAME = false; // unpausing the game before leaving the screen
+        save_game(); // if going home from the pause menu, the game is saved
+        killGame(); // then all the chained lists are emptied
         glutHideWindow(); // hides the current window, ie the game page
         glDeleteTextures(25, textures); // textures are linked to the window, need to delete them and reload in the next window
         display_home(); // calls the function to display the home page
@@ -486,20 +493,20 @@ void glutCreateElements(int timer){
         
         // every 2 runs of the glutCreateElements function, create a new car
         if(counterTimer1 %  2 == 0){
-            pCar newCar = createCar();
+            pCar newCar = createCar(0, 0, 0, 0, 0); // when first argument is 0, means we create a brand new car and other attributes are not needed
             addCar(listOfCars, newCar);
         }
             
         // once every 4 runs of the glutCreateElements function, create a new obstacle
         if(counterTimer1 %  4 == 0){
-            pObstacle newObstacle = createObstacle();
+            pObstacle newObstacle = createObstacle(0, 0, 0, 0); // when first argument is 0, means we create a brand new obstacle and other attributes are not needed
             addObstacle(listOfObstacles, newObstacle);
         }
         
         
         // once every 6 runs of the glutCreateElements function, create a new obstacle
         if(counterTimer1 %  6 == 0){
-            pBonus newBonus = createBonus();
+            pBonus newBonus = createBonus(0, 0, 0, 0, 0, 0); // when first argument is 0, means we create a brand new bonus and other attributes are not needed
             addBonus(listOfBonuses, newBonus);
         }
     
@@ -561,12 +568,187 @@ void glutAnimateElements(int timer){
 
 // this function is used to reset all the elements of the game to their initial value
 void killGame(void){
-    free(mapToRender);
-    free(p);
-    free(listOfCars);
-    free(listOfMissiles);
-    free(listOfObstacles);
-    free(listOfBonuses);
-    free(theGame);
-    maxNbrMissilesPlayer = 10; // initially
+    // first setting all items still active in the lists of cars, bonuses, missiles and obstacles as inactive
+    setInactiveAllCars(listOfCars);
+    setInactiveAllBonuses(listOfBonuses);
+    setInactiveAllMissiles(listOfMissiles);
+    setInactiveAllObstacles(listOfObstacles);
+
+    // then removing from their respective chained lists all inactive cars, bonuses, missiles and obstacles
+    destroyCars(listOfCars);
+    destroyBonuses(listOfBonuses);
+    destroyMissiles(listOfMissiles);
+    destroyObstacles(listOfObstacles);
+
+}
+
+
+// this function saves the game in its current state for the player to resume at a later stage
+void save_game(void){
+    FILE *f;
+    f = fopen("savedGame.txt","w");
+    
+    // first save the map by creating a temporary element that will go through each element of the map
+//    TO BE UNCOMMENTED ONCE LOAD FUNCTIONALITY IS ACTIVATED FOR THE MAP
+    
+//    listMap loopMap;
+//    loopMap = map;
+//
+//    //for each row of the map, loop through its content, then go to next line and update loopMap to point to the next element in the list
+//    while(loopMap != NULL){
+//        fprintf(f,"m "); // each row of the saved game file that relates to the map will begin with the char "m"
+//        for(int i = 0; i < MAP_SIZE_Y; i++){
+//            fprintf(f, "%c", (*loopMap).rowContent[i]);
+//        }
+//        fprintf(f,"\n");
+//        loopMap = loopMap->nextRow;
+//    }
+    
+    // Saving the information about the player, starting the row by the char "p"
+    fprintf(f, "p %f %f %i\n", p->pos_x, p->pos_y, p->health_points);
+    
+    // Saving the information about the list of cars, if any
+    if(listOfCars->carCounter > 0){
+        // creating a pointer to loop through the list of cars
+        pCar loopCar;
+        loopCar = listOfCars->firstCar;
+        
+        // each car in the list is saved over one row, beginning with the char "c"
+        while(loopCar != NULL){
+            fprintf(f,"c %f %f %i %i\n", loopCar->pos_x, loopCar->pos_y, loopCar->carActive, loopCar->healthPoints);
+            loopCar = loopCar->nextCar;
+        }
+    }
+    
+    // KEEP OUT FOR THE MOMENT, SAVING MISSILES WILL ONLY BE DONE ONCE THE MISSILES CLOSE TO THE PLAYER ARE DISREGARDED AT THE MOMENT OF THE SAVE
+    // Saving the information about the list of missiles, if any from the player or from the cars
+//    if(listOfMissiles->carsMissileCounter > 0 || listOfMissiles->carsMissileCounter >0){
+//        // creating a pointer to loop through the list of missiles
+//        pMissile loopMissile;
+//        loopMissile = listOfMissiles->firstMissile;
+//
+//        // each missile in the list is saved over one row, beginning with the char "t"
+//        while(loopMissile != NULL){
+//            fprintf(f,"t %f %f %i %i\n", loopMissile->pos_x, loopMissile->pos_y, loopMissile->missileActive, loopMissile->missileFromPlayer);
+//            loopMissile = loopMissile->nextMissile;
+//        }
+//    }
+
+    // Saving the information about the list of obstacles, if any
+    if(listOfObstacles >0){
+        // creating a pointer to loop through the list of obstacles
+        pObstacle loopObstacle;
+        loopObstacle = listOfObstacles->firstObstacle;
+        
+        // each obstacle in the list is saved over one row, beginning with the char "o"
+        while(loopObstacle != NULL){
+            fprintf(f,"o %f %f %i\n", loopObstacle->pos_x, loopObstacle->pos_y, loopObstacle->obstacleActive);
+            loopObstacle = loopObstacle->nextObstacle;
+        }
+    }
+    
+    // Saving the information about the list of bonuses, if any
+    if(listOfBonuses >0){
+        // creating a pointer to loop through the list of bonuses
+        pBonus loopBonus;
+        loopBonus = listOfBonuses->firstBonus;
+        
+        // each bonus in the list is saved over one row, beginning with the char "b"
+        while(loopBonus != NULL){
+            fprintf(f,"b %f %f %i %i %i\n", loopBonus->pos_x, loopBonus->pos_y, loopBonus->bonusActive, loopBonus->typeHealth, loopBonus->typeMissile);
+            loopBonus = loopBonus->nextBonus;
+        }
+    }
+    
+    // Saving the information about the game (row beginning with "g") and the max number of missiles the player can simultanuously fire (row beginning with "n")
+    fprintf(f, "g %i %i\n", theGame->timer, theGame->score);
+    fprintf(f, "n %i\n", maxNbrMissilesPlayer);
+    
+    fclose(f);
+}
+
+
+// this function loads the game from a previously saved game that was saved in a text file
+void load_game(void){
+    FILE *f;
+    f = fopen("savedGame.txt","r");
+    
+    if(f == NULL)
+    {
+        printf("Cannot open saved game!\n");
+        exit(1);
+    }
+    else{
+        char firstChar; // creating a variable that will contain the first char of each row
+        
+        while(!feof(f)){
+            firstChar = fgetc(f);
+            
+            switch(firstChar)
+            {
+                case 'p' : // if the current line contains the information about the player
+                {
+                    int hp;
+                    float pos_x,pos_y;
+                    fscanf(f, " %f %f %d", &pos_x, &pos_y, &hp); // retrieves the information about the player from the file
+                    
+                    p = createPlayer(pos_x, pos_y, hp); // the player is then created with the stored positions as starting point as well as stored number of Health Points
+                    
+                    break;
+                }
+                case 'c' : // if the current line contains information about a car
+                {
+                    int hp, carActive;
+                    float pos_x,pos_y;
+                    fscanf(f, " %f %f %d %d", &pos_x, &pos_y, &carActive, &hp);
+                    
+                    pCar newCar = createCar(1, pos_x, pos_y, carActive, hp); // when first argument is 1, means we create a car from a saved game, and other attributes are used to pass values
+                    addCar(listOfCars, newCar);
+                    
+                    break;
+                }
+                case 'o' : // if the current line contains information about an obstacle
+                {
+                    int obstacleActive;
+                    float pos_x,pos_y;
+                    fscanf(f, " %f %f %d", &pos_x, &pos_y, &obstacleActive);
+                    
+                    pObstacle newObstacle = createObstacle(1, pos_x, pos_y, obstacleActive); // when first argument is 1, means we create an obstacle from a saved game, and other attributes are used to pass required values
+                    addObstacle(listOfObstacles, newObstacle);
+                    
+                    break;
+                }
+                case 'b' : // if the current line contains information about a bonus
+                {
+                    int bonusActive,typeHealth,typeMissile;
+                    float pos_x,pos_y;
+                    fscanf(f, " %f %f %d %d %d", &pos_x, &pos_y, &bonusActive, &typeHealth, &typeMissile);
+                    
+                    pBonus newBonus = createBonus(1, pos_x, pos_y, bonusActive, typeHealth, typeMissile); // when first argument is 1, means we create a bonus from a saved game and other attributes are used to pass all the required values
+                    addBonus(listOfBonuses, newBonus);
+                    
+                    break;
+                }
+                case 'g' : // if the current line contains the score and timer
+                {
+                    int score,timer;
+                    fscanf(f, " %d %d", &timer, &score);
+                    
+                    theGame = createGame(score, timer); // when creating a game from a saved game, score and timer are retrieved from the save file
+                    
+                    break;
+                }
+                case 'n' : // if the current line contains the maximum number of missiles the player can shoot
+                {
+                    int number;
+                    fscanf(f, " %d", &number);
+                    
+                    maxNbrMissilesPlayer = number; // when loading a game, setting accordingly the max number of missiles the player can simultaneously fire
+                    
+                    break;
+                }
+            }
+        }
+    }
+    fclose(f);
 }

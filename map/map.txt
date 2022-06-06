@@ -1,60 +1,60 @@
-BGGHGG#            @            #GGGGGB
-BGGGGG#            @            #GGGHGB
-BTGGGG#            @            #GGGGGB
-BGGGGG#            @            #GFGGGB
-BGGGGG#            @            #GGTGGB
-BGGGGF#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGHGG#            @            #GGGGGB
-BGGGGG#            @            #GGGHGB
-BTGGGG#            @            #GGGGGB
-BGGGGG#            @            #GFGGGB
-BGGGGG#            @            #GGTGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGGGG#            @            #GGGGGB
-BGGHGG#            @            #GGGGGB
-BGGGGG#            @            #GGGHGB
-BTGGGG#            @            #GGGGGB
-BGGGGG#            @            #GFGGGB
-BGGGGG#            @            #GGTGGB
+BGGHGG#............@............#GGGGGB
+BGGGGG#............@............#GGGHGB
+BTGGGG#............@............#GGGGGB
+BGGGGG#............@............#GFGGGB
+BGGGGG#............@............#GGTGGB
+BGGGGF#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGHGG#............@............#GGGGGB
+BGGGGG#............@............#GGGHGB
+BTGGGG#............@............#GGGGGB
+BGGGGG#............@............#GFGGGB
+BGGGGG#............@............#GGTGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGGGG#............@............#GGGGGB
+BGGHGG#............@............#GGGGGB
+BGGGGG#............@............#GGGHGB
+BTGGGG#............@............#GGGGGB
+BGGGGG#............@............#GFGGGB
+BGGGGG#............@............#GGTGGB

@@ -14,16 +14,30 @@
 #include "../game.h"
 
 // This function returns a new obstacle. It is called periodically based on the function glutCreateObstacle()
-pObstacle createObstacle(void){
+pObstacle createObstacle(int loadedObstacle, float x, float y, int active){
     pObstacle obstacle;
     obstacle = (pObstacle) malloc (sizeof(struct obstacle));
     
-    obstacle->pos_x = 1;
-    obstacle->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 7;
-
-    obstacle->obstacleActive = true;
-    obstacle->previousObstacle = NULL;
-    obstacle->nextObstacle = NULL;
+    if(loadedObstacle==0){
+        obstacle->pos_x = 1;
+        obstacle->pos_y = ( rand() % (WINDOW_SIZE_Y - 15) ) + 7;
+        obstacle->obstacleActive = true;
+        obstacle->previousObstacle = NULL;
+        obstacle->nextObstacle = NULL;
+    }
+    else{
+        obstacle->pos_x = x;
+        obstacle->pos_y = y;
+        if(active == 1){
+            obstacle->obstacleActive = true;
+        }
+        else{
+            obstacle->obstacleActive = false;
+        }
+        
+        obstacle->previousObstacle = NULL;
+        obstacle->nextObstacle = NULL;
+    }
     
     return obstacle;
 }
@@ -127,3 +141,19 @@ void destroyObstacles(pObstacleList list){
     }
 }
 
+// this function sets all active obstacles as inactive. It is called along with the destroyObstacles() function when killing a game.
+void setInactiveAllObstacles(pObstacleList list){
+    if (list->firstObstacle != NULL ){ // if the list of all obstacles is not empty, all active obstacles are set to inactive. If list of osbtacles is empty, do nothing
+        pObstacle loop;
+        loop = (pObstacle) malloc(sizeof(struct obstacle));
+        loop = list->firstObstacle;
+        
+        while(loop != NULL){ // as long as we did not go through the whole list of obstacles, execute the following code
+            if(loop->obstacleActive == true){ // if the current obstacle is active, then it is set to inactive
+                loop->obstacleActive = false;
+            }
+            loop = loop->nextObstacle;
+        }
+        free(loop); // freeing the temporary allocation of memory
+    }
+}

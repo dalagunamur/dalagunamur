@@ -17,12 +17,13 @@
 #include "bonus.h"
 
 // this function returns the player, initializing its position on the map
-pPlayer createPlayer(){
+pPlayer createPlayer(float x, float y, int hp){
     pPlayer p;
     p = (pPlayer) malloc (sizeof(struct player));
-    p->pos_x = 37;
-    p->pos_y = 30;
-    p->health_points = 3;
+    
+    p->pos_x = x;
+    p->pos_y = y;
+    p->health_points = hp;
     p->alt_weapon_available = true;
     
     return p;

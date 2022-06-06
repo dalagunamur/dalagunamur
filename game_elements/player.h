@@ -20,7 +20,7 @@ typedef struct player * pPlayer;
 pPlayer p; // This global variable p is used to represent to player across the program
 int maxNbrMissilesPlayer; // this global variable will store the maximum number of missiles from the player that can be displayed on screen. By default it will be 10, but can be increased via bonuses
 
-pPlayer createPlayer(); // this function creates the player. It is initialized at the beginning of the game
+pPlayer createPlayer(float x, float y, int hp); // this function creates the player. It is initialized at the beginning of the game and receives as argument the initial position and HP, with default value if launching a new game, or from the saved game in case of resuming a previously started game
 void move_player_up(char **map); // this function moves the player up by one row, unless if reaching the highest row
 void move_player_down(char **map); // this function moves the player down by one row, unless if reaching the lowest row
 void move_player_left(char **map); // this function moves the player left by one column, unless if reaching the left side of the road

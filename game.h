@@ -35,7 +35,9 @@ bool GAME_OVER; // this variable will be used to freeze the game when the player
 int counterTimer0; // this variable will be used as a counter for the glut timer 0, which handles the movements of all elements.
 int counterTimer1; // this variable will be used as a counter for the glut timer 1, which handles the creation of all elements
 
-pGame createGame(void); // initialize a new game or load an existing game
+// This function is called when starting a game. If it is a new game, the arguments score and timer will be set to 0. When loading a previously saved game, then the arguments will pass to the function the actual score and timer.
+pGame createGame(int score, int timer);
+
 void handleKeyboard(unsigned char input, int x, int y); // this function is used to capture the key pressed by the player and trigger the ad hoc function in case it is a binded key
 void play(pGame game, char **map, pPlayer p, pCarList carlist, pMissileList missileList, pObstacleList obstacleList, pBonusList bonusList); // this function drives the various sequences of the game
 
@@ -48,6 +50,8 @@ void checkBonusesImpactPlayer(pPlayer player, pBonusList bonusList); // this fun
 void checkCarsImpactBonuses(pCarList carList, pBonusList bonusList); // this function compares the coordinates of each bonus with those of each car to identify if there is an impact
 void checkMissilesImpactBonuses(pMissileList missileList, pBonusList bonusList); // this function compares the coordinates of each bonus with those of each missile shot from a car to identify if there is an impact
 void killGame(void); // this function is used to reset the values of all the elements of the game to zero
+void save_game(void); // this function is used to print in a text file all the elements of the current game
+void load_game(void); // this function is used to read from a saved game text file and create all the elements based on the content of the file
 
 
 // CENTRALIZING GLUT TIMERS
@@ -56,6 +60,5 @@ void glutAnimateElements(int timer); // this function centralizes the movements 
 
 // NOT YET IMPLEMENTED
 void set_scrolling_pace(int timer);
-void save_game(void);
 
 #endif

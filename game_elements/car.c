@@ -16,18 +16,36 @@
 #include "../game.h"
 
 // This function returns a new car, placing it on the first row of the screen, at a random position on the road
-pCar createCar(void){
+pCar createCar(int loadedCar, float x, float y, int active, int hp){
 	pCar car;
     car = (pCar) malloc (sizeof(struct car));
     
-    car->pos_x = 1;
-    car->pos_y = ( rand() % (WINDOW_SIZE_Y - 16) ) + 7; // cars must appear on the first row and on the road, not on the grass
-    car->healthPoints = (rand() %2) + 1; // cars have either 1 or 2 health points
-    car->carFrozen = false; // by default a car is moving
-    car->carActive = true;
-    car->previousCar = NULL;
-	car->nextCar = NULL;
-	
+    if(loadedCar == 0){ // creating a new car, while in game
+        car->pos_x = 1;
+        car->pos_y = ( rand() % (WINDOW_SIZE_Y - 16) ) + 7; // cars must appear on the first row and on the road, not on the grass
+        car->healthPoints = (rand() %2) + 1; // cars have either 1 or 2 health points
+        car->carFrozen = false; // by default a car is moving
+        car->carActive = true;
+        car->previousCar = NULL;
+        car->nextCar = NULL;
+    }
+    
+    else{ // creating a car from a saved game
+        car->pos_x = x;
+        car->pos_y = y;
+        car->healthPoints = hp;
+        car->carFrozen = false; // by default a car is moving
+        if(active==1){
+            car->carActive = true;
+        }
+        else{
+            car->carActive = false;
+        }
+        
+        car->previousCar = NULL;
+        car->nextCar = NULL;
+    }
+        
 	return car;
 }
 
@@ -139,5 +157,22 @@ void carHit(pCar car){
     
     if (car->healthPoints <= 0){
         car->carActive = false;
+    }
+}
+
+// this function sets all active cars as inactive. It is called along with the destroyCars() function when killing a game.
+void setInactiveAllCars(pCarList list){
+    if (list->firstCar != NULL ){ // if the list of all cars is not empty, check if some cars have to be flagged as inactive. If list of cars is empty, do nothing
+        pCar loop;
+        loop = (pCar) malloc(sizeof(struct car));
+        loop = list->firstCar;
+        
+        while(loop != NULL){ // as long as we did not go through the whole list of cars, execute the following code
+            if(loop->carActive == true){ // if the current car is active, then it must be set to inactive
+                loop->carActive = false;
+            }
+            loop = loop->nextCar;
+        }
+        free(loop);
     }
 }

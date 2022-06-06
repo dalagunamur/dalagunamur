@@ -111,7 +111,7 @@ void handleHomePage(){
         NEW_GAME = false;
         glutHideWindow(); // hides the current Window, ie the Home Page
         glDeleteTextures(25, textures); // textures are linked to the window, need to delete them and reload in the next window
-        display_game(1); // calls the function to display the Game window
+        display_game(0); // calls the function to display the Game window, with argument set to 0, to indicate this is for a brand new game
     }
     if (LOAD_GAME){
         LOAD_GAME = false;
@@ -158,20 +158,25 @@ void display_game(int gameId){
     // INITIALIZE THE MAP - THE PLAYER - THE LISTS OF CARS, MISSILES, BONUSES, OBSTACLES and HIGH SCORES
     row = NULL;
     map = NULL;
-    p = createPlayer();
     listOfCars = createCarList();
     listOfMissiles = createMissileList();
     listOfObstacles = createObstacleList();
     listOfBonuses = createListBonuses();
-    maxNbrMissilesPlayer = 10; // initially setting the max nbr of missiles a player can shoot at the same time to 10
-        
     loadMapFile(MAP_SIZE_X,MAP_SIZE_Y);
     for(int i=0; i < WINDOW_SIZE_X; i++){
         row = createRow();
         map = addRow(map, row);
     }
     displayMap(map);
-    theGame = createGame();
+    
+    if(gameId == 0){ // if the argument is passed with value 0, it means the game is a brand new one and there are no cars, bonuses, obstacles to create + the score and the number of missiles that can be shot simultaneously are set to their initial value + the starting position of the player is the default one
+        p = createPlayer(37, 30, 3); // when creating a new game, the starting position is set to coordinates 37,30 and the number of available Health Points is 3
+        maxNbrMissilesPlayer = 10; // initially setting the max nbr of missiles a player can shoot at the same time to 10
+        theGame = createGame(0, 0); // when creating a brand new game, the initial values for the score and the timer are passed as 0
+    }
+    else{ // if the argument is passed with another value (ie always 1 currently), it means it is a previously saved game which is resumed. Hence the need to load existing cars, bonuses, obstacles, the player position and the game's score and timer
+        load_game();
+    }
     // END OF INITIALIZATION
     
     // GLUT HANDLING OF THE MAIN LOOP AND INITIALIZING THE CALLBACKS
@@ -235,7 +240,7 @@ void handleLoadPage(){
         RESUME_GAME = false;
         glutHideWindow(); // hides the current Window, ie the Load Page
         glDeleteTextures(25, textures); // textures are linked to the window, need to delete them and reload in the next window
-        display_game(1); // calls the function to display the Game window
+        display_game(1); // calls the function to display the Game window, with value 1 to indicate this is from a saved game
     }
     if (GO_BACK_HOME){
         GO_BACK_HOME = false;

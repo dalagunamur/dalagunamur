@@ -164,3 +164,19 @@ void destroyMissiles(pMissileList list){
     }
 }
 
+// this function sets all active missiles as inactive. It is called along with the destroyMissiles() function when killing a game.
+void setInactiveAllMissiles(pMissileList list){
+    if (list->firstMissile != NULL ){ // if the list of all missiles is not empty, flag all active missiles as inactive. If list of missiles is empty, do nothing
+        pMissile loop;
+        loop = (pMissile) malloc(sizeof(struct missile));
+        loop = list->firstMissile;
+        
+        while(loop != NULL){ // as long as we did not go through the whole list of missiles, execute the following code
+            if(loop->missileActive == true){ // if the current missile is inactive (ie, missileActive == FALSE), then it must be set to inactive
+                loop->missileActive = false;
+            }
+            loop = loop->nextMissile;
+        }
+        free(loop);
+    }
+}
