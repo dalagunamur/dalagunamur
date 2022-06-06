@@ -733,22 +733,39 @@ void drawBonuses(pBonusList list){
 
 // this function displays the paused game menu, advising about the potential actions the player can take
 void displayPause(void){
-    glEnable(GL_TEXTURE_2D);    // enable functionality to add textures
-        
-    glBindTexture(GL_TEXTURE_2D,textures[13]);
-    glColor3f(1.0f,1.0f,1.0f);
+//    glEnable(GL_TEXTURE_2D);    // enable functionality to add textures
+//
+//    glBindTexture(GL_TEXTURE_2D,textures[13]);
+//    glColor3f(1.0f,1.0f,1.0f);
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    glTranslatef(175,215,0.0f);
+//    glBegin(GL_QUADS);
+//    glTexCoord3f(0.0f, 0.0f, 1.0f); glVertex3f(0.0f,0.0f,0.0f);
+//    glTexCoord3f(1.0f, 0.0f, 1.0f); glVertex3f(450,0.0f,0.0f);
+//    glTexCoord3f(1.0f, 1.0f, 1.0f); glVertex3f(450,350,0.0f);
+//    glTexCoord3f(0.0f, 1.0f, 1.0f); glVertex3f(0.0f,350,0.0f);
+//    glEnd();
+//
+//
+//    glDisable(GL_TEXTURE_2D);
+    
+    glColor3f(0.0f,0.0f,0.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(175,215,0.0f);
     glBegin(GL_QUADS);
-    glTexCoord3f(0.0f, 0.0f, 1.0f); glVertex3f(0.0f,0.0f,0.0f);
-    glTexCoord3f(1.0f, 0.0f, 1.0f); glVertex3f(450,0.0f,0.0f);
-    glTexCoord3f(1.0f, 1.0f, 1.0f); glVertex3f(450,350,0.0f);
-    glTexCoord3f(0.0f, 1.0f, 1.0f); glVertex3f(0.0f,350,0.0f);
+    glVertex3f(0.0f,0.0f,0.0f);
+    glVertex3f(450,0.0f,0.0f);
+    glVertex3f(450,350,0.0f);
+    glVertex3f(0.0f,350,0.0f);
     glEnd();
-        
-
-    glDisable(GL_TEXTURE_2D);
+   
+    // Displaying text
+    glColor3f(1.0f,1.0f,1.0f);
+    drawText("p - Resume Game", 185, 150);
+    drawText("h - Main Menu (with save)", 160, 200);
+    drawText("ESC - Quit game (no save)", 160, 250);
 }
 
 // this function displays the game over screen, providing the final score and allowing to leave the game
@@ -756,7 +773,7 @@ void displayGameOver(pGame game){
     glColor3f(0.0f,0.0f,0.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslatef(175,215,0.0f); // positionned on the first row, where the grass begins on the right hand side of the screen
+    glTranslatef(175,215,0.0f);
     glBegin(GL_QUADS);
     glVertex3f(0.0f,0.0f,0.0f);
     glVertex3f(450,0.0f,0.0f);

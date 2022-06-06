@@ -185,10 +185,10 @@ void display_game(int gameId){
     
     glutDisplayFunc(display);
     glutReshapeFunc(handleResize);
-    if(PAUSED_GAME == false){
+//    if(PAUSED_GAME == false){
         glutTimerFunc(500, glutCreateElements, 1);
         glutTimerFunc(1000, glutAnimateElements, 0);
-    }
+//    }
 
     glEnable(GL_DEPTH_TEST);
     glutMainLoop();
