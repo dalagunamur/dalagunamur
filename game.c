@@ -138,10 +138,15 @@ void play(pGame game, char **map, pPlayer p, pCarList carList, pMissileList miss
     if (GO_TO_MAIN){
         GO_TO_MAIN = false;
         PAUSED_GAME = false; // unpausing the game before leaving the screen
-        save_game(); // if going home from the pause menu, the game is saved
+        if(GAME_OVER == false){ // make sure we are not in GAME OVER mode anymore before saving the game
+            save_game(); // if going home from the pause menu, the game is saved
+        }
+        GAME_OVER = false; // making sure we are not in GAME OVER mode anymore when returning to the main page
         killGame(); // then all the chained lists are emptied
         glutHideWindow(); // hides the current window, ie the game page
         glDeleteTextures(25, textures); // textures are linked to the window, need to delete them and reload in the next window
+        glutSetWindow(windowHome);
+        glutShowWindow();
         display_home(); // calls the function to display the home page
         
     }
@@ -514,7 +519,7 @@ void glutCreateElements(int timer){
     
     counterTimer1 ++;
     glutPostRedisplay();
-    glutTimerFunc(90000/SCREEN_FPS, glutCreateElements, 1); // runs every 4 seconds
+    glutTimerFunc(90000/SCREEN_FPS, glutCreateElements, 1); // runs every 1.5 seconds
 }
 
 
@@ -563,7 +568,7 @@ void glutAnimateElements(int timer){
     
     counterTimer0 ++;
     glutPostRedisplay();
-    glutTimerFunc(1020/SCREEN_FPS, glutAnimateElements, 0);
+    glutTimerFunc(360/SCREEN_FPS, glutAnimateElements, 0);
 }
 
 // this function is used to reset all the elements of the game to their initial value
